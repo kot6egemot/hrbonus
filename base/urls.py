@@ -1,6 +1,6 @@
 from django.urls import path
-from base.auth_view import ApiLoginView, UserProfileView
-from base.bonus_view import TestQueryView
+from base.views.auth_view import ApiLoginView, UserProfileView
+from base.views.bonus_view import TestQueryView
 
 urlpatterns = [
                   path('login', ApiLoginView.as_view(), name='login'),
