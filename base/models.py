@@ -22,3 +22,7 @@ class Bonuses_Summary(models.Model):
 
     class Meta:
         db_table = 'bonuses_summary'
+
+    @classmethod
+    def get_model_fields(cls):
+        return [field.name for field in cls._meta.fields]
