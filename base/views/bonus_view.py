@@ -1,3 +1,5 @@
+from random import randint
+
 from django.http import JsonResponse
 from rest_framework.views import APIView
 
@@ -14,3 +16,8 @@ class BonusView(APIView):
         serialize = BonusSerializer(bonuses, many=True)
         return JsonResponse({"result": True, "_bonus": serialize.data, "__bonus": serialize.data, 'bonus_headers': headers})
 
+    def post(self, request):
+        bonus_item = request.data
+        bonus_item["PositionFK"]  = randint(1, 100)
+        del bonus_item["changed"]
+        return JsonResponse({"result": True, "_item": bonus_item,  "__item": bonus_item})
