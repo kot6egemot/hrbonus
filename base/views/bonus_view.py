@@ -14,7 +14,7 @@ class BonusView(APIView):
         fields = Bonuses_Summary.get_model_fields()
         headers = [{'text': field, 'value': field} for field in fields] + [{'text': 'Actions', 'value': 'Actions'}]
         serialize = BonusSerializer(bonuses, many=True)
-        return JsonResponse({"result": True, "bonus": serialize.data, 'bonus_headers': headers})
+        return JsonResponse({"result": True, "bonus": serialize.data, 'headers': headers})
 
     def post(self, request):
         bonus_item = request.data
