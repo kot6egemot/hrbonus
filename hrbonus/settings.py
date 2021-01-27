@@ -86,9 +86,9 @@ DATABASES = {
     'default': {
         'ENGINE': 'sql_server.pyodbc',
         'NAME': 'test',
-        'USER': 'admin',
-        'PASSWORD': 'Matrix!@',
-        'HOST': 'localhost\SQLEXPRESS',
+        'USER': 'sa',
+        'PASSWORD': 'Exos93009!!',
+        'HOST': '192.168.1.46\SQLEXPRESS2017',
     },
 }
 
