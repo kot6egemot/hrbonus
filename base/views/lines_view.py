@@ -12,10 +12,11 @@ class LinesView(APIView):
 
     def get(self, request):
         lineses = Lines.objects.all()
-        fields = Lines.get_model_fields()
+        headers = Lines.get_headers()
+
         editable_columns = ["EffectivePlan", "EffectiveFact", "ErrorPlan", "ErrorFact", "Decision"]
-        headers = [{'text': field, 'value': field} for field in fields] + [{'text': 'Actions', 'value': 'Actions'}]
         serialize = LinesSerializer(lineses, many=True)
+
         return JsonResponse(
             {
                 "result": True,

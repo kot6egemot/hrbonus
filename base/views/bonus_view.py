@@ -12,10 +12,12 @@ class BonusView(APIView):
 
     def get(self, request):
         bonuses = Bonuses_Summary.objects.all()
-        fields = Bonuses_Summary.get_model_fields()
+        headers = Bonuses_Summary.get_headers()
+
         editable_columns = ["LeadMoney", "TeachMoney", "PersPart"]
-        headers = [{'text': field, 'value': field} for field in fields] + [{'text': 'Actions', 'value': 'Actions'}]
+
         serialize = BonusSerializer(bonuses, many=True)
+
         return JsonResponse(
             {
                 "result": True,
