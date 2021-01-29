@@ -3,8 +3,8 @@ from random import randint
 from django.http import JsonResponse
 from rest_framework.views import APIView
 
-from base.models import Bonuses_Summary
-from base.serializers.bonus_serializer import BonusSerializer
+from base.models import Bonuses_Summary, Lines
+from base.serializers.bonus_serializer import BonusSerializer, LinesDependSerializer
 from base.views.utils import delete_props
 
 
@@ -12,7 +12,7 @@ class BonusView(APIView):
 
     def get(self, request):
         bonuses = Bonuses_Summary.objects.all()
-        headers = Bonuses_Summary.get_headers()
+        columns = Bonuses_Summary.get_columns()
 
         editable_columns = ["LeadMoney", "TeachMoney", "PersPart"]
 
@@ -22,7 +22,7 @@ class BonusView(APIView):
             {
                 "result": True,
                 "bonus": serialize.data,
-                'headers': headers,
+                'columns': columns,
                 "editable_columns": editable_columns
             }
         )
@@ -38,4 +38,13 @@ class BonusView(APIView):
             return JsonResponse({"result": True, "item": bonus_item})
 
 
-
+class BonusLineView(APIView):
+    def get(self, request):
+        lineses = Lines.objects.all()
+        serialize = LinesDependSerializer(lineses, many=True)
+        return JsonResponse(
+            {
+                "result": True,
+                "bonus_line": serialize.data,
+            }
+        )

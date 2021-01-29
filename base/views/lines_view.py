@@ -12,7 +12,7 @@ class LinesView(APIView):
 
     def get(self, request):
         lineses = Lines.objects.all()
-        headers = Lines.get_headers()
+        columns = Lines.get_columns()
 
         editable_columns = ["EffectivePlan", "EffectiveFact", "ErrorPlan", "ErrorFact", "Decision"]
         serialize = LinesSerializer(lineses, many=True)
@@ -21,7 +21,7 @@ class LinesView(APIView):
             {
                 "result": True,
                 "line": serialize.data,
-                'headers': headers,
+                'columns': columns,
                 "editable_columns": editable_columns
             }
         )

@@ -37,6 +37,11 @@ class LinesSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class LinesDependSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Lines
+        fields = ('LineId', 'Name')
+
 class PositionSerializer(serializers.ModelSerializer):
     PositionID = serializers.CharField()
     PositionName = serializers.CharField()
