@@ -1,7 +1,13 @@
 from django.db import models
 
+class BaseModel(models.Model):
 
-class Bonuses_Summary(models.Model):
+    @classmethod
+    def get_model_fields(cls):
+        return [field.name for field in cls._meta.fields]
+
+
+class Bonuses_Summary(BaseModel):
     Year = models.TextField() # int
     Month = models.TextField()  # int
     PersNr = models.CharField(primary_key=True, max_length=10)
@@ -28,11 +34,8 @@ class Bonuses_Summary(models.Model):
     class Meta:
         db_table = 'bonuses_summary'
 
-    @classmethod
-    def get_model_fields(cls):
-        return [field.name for field in cls._meta.fields]
 
-class Lines(models.Model):
+class Lines(BaseModel):
     LineId = models.CharField(primary_key=True, max_length=10)
     Name = models.TextField()
     CostCenter = models.TextField()
@@ -45,9 +48,6 @@ class Lines(models.Model):
     class Meta:
         db_table = 'lines'
 
-    @classmethod
-    def get_model_fields(cls):
-        return [field.name for field in cls._meta.fields]
 
 class Position(models.Model):
     PositionID = models.CharField(primary_key=True, max_length=10)
@@ -56,7 +56,3 @@ class Position(models.Model):
 
     class Meta:
         db_table = 'positions'
-
-    @classmethod
-    def get_model_fields(cls):
-        return [field.name for field in cls._meta.fields]
