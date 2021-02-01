@@ -45,6 +45,6 @@ class BonusLineView(APIView):
         return JsonResponse(
             {
                 "result": True,
-                "bonus_line": serialize.data,
+                "bonus_linefk": serialize.data,
             }
         )

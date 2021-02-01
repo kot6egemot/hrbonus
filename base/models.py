@@ -9,9 +9,12 @@ class BaseModel(models.Model):
     def get_columns(cls):
         fields = cls.get_model_fields()
         displayed_foreign_fields = cls.displayed_foreign_fields()
-        columns = [{'text': field['text'], 'value': field['name'],
-                    'display_relative_model': True if field['name'] in displayed_foreign_fields else False}
-                   for field in fields] + [{'text': 'Actions', 'value': 'Actions'}]
+        columns = [
+                      {
+                          'text': field['text'], 'value': field['name'],
+                          'display_relative_model': True if field['name'] in displayed_foreign_fields else False,
+                      }
+                      for field in fields] + [{'text': 'Actions', 'value': 'Actions'}]
         return columns
 
     @classmethod
@@ -70,7 +73,6 @@ class Lines(BaseModel):
 
     def __str__(self):
         return self.Name if self.Name else 'НетИмени'
-
 
 
 class Position(BaseModel):

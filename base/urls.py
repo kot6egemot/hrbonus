@@ -10,7 +10,7 @@ urlpatterns = [
               ] + \
               [
                   path('bonus', BonusView.as_view(), name='bonus'),
-                  path('bonus/line', BonusLineView.as_view(), name='bonus_line'),
+                  path('bonus_linefk', BonusLineView.as_view(), name='bonus_linefk'),
 
                   path('line', LinesView.as_view(), name='lines'),
               ]
