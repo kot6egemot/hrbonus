@@ -12,9 +12,14 @@ class LinesView(APIView):
 
     def get(self, request):
         lineses = Lines.objects.all()
-        columns = Lines.get_columns()
+        columns = Lines.get_columns(hide_columns=['LineId'])
 
-        editable_columns = ["EffectivePlan", "EffectiveFact", "ErrorPlan", "ErrorFact", "Decision"]
+
+        prop_columns = {
+            'editable_columns': Lines.editable_columns(),
+            'depend_columns': Lines.displayed_foreign_fields()
+        }
+
         serialize = LinesSerializer(lineses, many=True)
 
         return JsonResponse(
@@ -22,7 +27,7 @@ class LinesView(APIView):
                 "result": True,
                 "line": serialize.data,
                 'columns': columns,
-                "editable_columns": editable_columns
+                "prop_columns": prop_columns
             }
         )
 

@@ -11,20 +11,24 @@ class BaseModel(models.Model):
         abstract = True
 
     @classmethod
-    def get_columns(cls):
+    def get_columns(cls, hide_columns=None):
+        if hide_columns is None:
+            hide_columns = list()
         fields = cls.get_model_fields()
         displayed_foreign_fields = cls.displayed_foreign_fields()
-        columns = [{'text': 'Actions', 'value': 'Actions'}] + [
+        columns = [{'text': 'Actions', 'value': 'Actions'}] \
+                  + [
                       {
                           'text': field['text'], 'value': field['name'],
                           'display_relative_model': True if field['name'] in displayed_foreign_fields else False,
                       }
-                      for field in fields]
+                      for field in fields if field['name'] not in hide_columns
+                  ]
         return columns
 
     @classmethod
     def get_model_fields(cls):
-        return [{'name': field.name, 'text': field.verbose_name or field.verbose_name or field.name} for field in
+        return [{'name': field.name, 'text': field.verbose_name or field.name} for field in
                 cls._meta.fields]
 
     @staticmethod
@@ -86,6 +90,10 @@ class Lines(BaseModel):
 
     def __str__(self):
         return str(self.LineId)
+
+    @staticmethod
+    def editable_columns():
+        return ["LeadMoney", "TeachMoney", "PersPart"]
 
 
 class Position(BaseModel):
