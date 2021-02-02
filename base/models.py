@@ -1,5 +1,10 @@
 from django.db import models
 
+"""
+    display_relative_model - внешнии ключи в другую таблицу, значение которых надо подгрузить.
+                             предоставить url => entity_{foreign_key}
+"""
+
 
 class BaseModel(models.Model):
     class Meta:
@@ -9,12 +14,12 @@ class BaseModel(models.Model):
     def get_columns(cls):
         fields = cls.get_model_fields()
         displayed_foreign_fields = cls.displayed_foreign_fields()
-        columns = [
+        columns = [{'text': 'Actions', 'value': 'Actions'}] + [
                       {
                           'text': field['text'], 'value': field['name'],
                           'display_relative_model': True if field['name'] in displayed_foreign_fields else False,
                       }
-                      for field in fields] + [{'text': 'Actions', 'value': 'Actions'}]
+                      for field in fields]
         return columns
 
     @classmethod
@@ -32,19 +37,19 @@ class BaseModel(models.Model):
 
 
 class Bonuses_Summary(BaseModel):
-    Year = models.TextField()  # int
-    Month = models.TextField()  # int
+    Year = models.TextField(verbose_name='Год')  # int
+    Month = models.TextField(verbose_name='Месяц')  # int
     PersNr = models.CharField(primary_key=True, max_length=10)
 
     BO46 = models.FloatField()
     BO19 = models.FloatField()
     BO10 = models.PositiveIntegerField()
 
-    LastName = models.TextField()
+    LastName = models.TextField(verbose_name='Фамилия')
     FirstName = models.TextField(verbose_name='Имя')
     AddName = models.TextField()
     PositionFK = models.PositiveIntegerField()
-    LineFK = models.ForeignKey("Lines", on_delete=models.CASCADE, db_column="LineFK")
+    LineFK = models.ForeignKey("Lines", on_delete=models.CASCADE, db_column="LineFK", verbose_name='Линия')
     PersPart = models.PositiveIntegerField()
     DaysInMonth = models.PositiveIntegerField()
     LeadMoney = models.FloatField()
