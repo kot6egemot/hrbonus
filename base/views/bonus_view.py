@@ -11,10 +11,15 @@ from base.views.utils import delete_props
 class BonusView(APIView):
 
     def get(self, request):
-        bonuses = Bonuses_Summary.objects.all()
+        bonuses = Bonuses_Summary.objects.all()[:1]
         columns = Bonuses_Summary.get_columns()
 
-        editable_columns = ["LeadMoney", "TeachMoney", "PersPart"]
+        editable_columns = ["LeadMoney", "TeachMoney", "PersPart", 'LineFK']
+
+        prop_columns = {
+            'editable_columns': editable_columns,
+            'depend_columns': Bonuses_Summary.displayed_foreign_fields()
+        }
 
         serialize = BonusSerializer(bonuses, many=True)
 
@@ -23,7 +28,7 @@ class BonusView(APIView):
                 "result": True,
                 "bonus": serialize.data,
                 'columns': columns,
-                "editable_columns": editable_columns
+                "prop_columns": prop_columns
             }
         )
 

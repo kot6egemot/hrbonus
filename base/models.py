@@ -72,7 +72,7 @@ class Lines(BaseModel):
         db_table = 'lines'
 
     def __str__(self):
-        return self.Name if self.Name else 'НетИмени'
+        return str(self.LineId)
 
 
 class Position(BaseModel):
