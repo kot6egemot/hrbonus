@@ -21,6 +21,19 @@ class BonusSerializer(serializers.ModelSerializer):
         model = Bonuses_Summary
         fields = '__all__'
 
+    def to_representation(self, instance):
+        """
+            Подставляет пустую строчку в значение поля если поле == None
+        """
+        data = super().to_representation(instance)
+        for field in Bonuses_Summary.editable_columns():
+            try:
+                if not data[field]:
+                    data[field] = ""
+            except KeyError:
+                pass
+        return data
+
 
 class LinesSerializer(serializers.ModelSerializer):
     LineId = serializers.CharField()

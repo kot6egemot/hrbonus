@@ -22,8 +22,12 @@ class BaseModel(models.Model):
         return [{'name': field.name, 'text': field.verbose_name or field.verbose_name or field.name} for field in
                 cls._meta.fields]
 
-    @classmethod
-    def displayed_foreign_fields(self):
+    @staticmethod
+    def displayed_foreign_fields() -> list:
+        return []
+
+    @staticmethod
+    def editable_columns() -> list:
         return []
 
 
@@ -53,9 +57,13 @@ class Bonuses_Summary(BaseModel):
     class Meta:
         db_table = 'bonuses_summary'
 
-    @classmethod
-    def displayed_foreign_fields(self):
+    @staticmethod
+    def displayed_foreign_fields():
         return ['LineFK']
+
+    @staticmethod
+    def editable_columns():
+        return ["LeadMoney", "TeachMoney", "PersPart", 'LineFK']
 
 
 class Lines(BaseModel):
