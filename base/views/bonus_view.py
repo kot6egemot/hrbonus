@@ -5,31 +5,20 @@ from rest_framework.views import APIView
 
 from base.models import Bonuses_Summary, Lines
 from base.serializers.bonus_serializer import BonusSerializer, LinesDependSerializer
-from base.views.utils import delete_props
+from base.views.utils import delete_props, BaseGenericListView
+
+class BonusViewGenericListView(BaseGenericListView):
+    _model = Bonuses_Summary
+    _param_entity = 'bonus'
+    _serialize = BonusSerializer
+
+class BonusLineViewGenericListView(BaseGenericListView):
+    _model = Lines
+    _param_entity = 'bonus_linefk'
+    _serialize = LinesDependSerializer
 
 
-class BonusView(APIView):
-
-    def get(self, request):
-        bonuses = Bonuses_Summary.objects.all()[:5]
-        columns = Bonuses_Summary.get_columns()
-
-        prop_columns = {
-            'editable_columns': Bonuses_Summary.editable_columns(),
-            'depend_columns': Bonuses_Summary.displayed_foreign_fields()
-        }
-
-        serialize = BonusSerializer(bonuses, many=True)
-
-        return JsonResponse(
-            {
-                "result": True,
-                "bonus": serialize.data,
-                'columns': columns,
-                "prop_columns": prop_columns
-            }
-        )
-
+class BonusView(APIView, BonusViewGenericListView):
     def post(self, request):
         bonus_item = request.data
         if isinstance(bonus_item, list):
@@ -40,14 +29,5 @@ class BonusView(APIView):
             bonus_item["PositionFK"] = randint(1, 100)
             return JsonResponse({"result": True, "item": bonus_item})
 
-
-class BonusLineView(APIView):
-    def get(self, request):
-        lineses = Lines.objects.all()
-        serialize = LinesDependSerializer(lineses, many=True)
-        return JsonResponse(
-            {
-                "result": True,
-                "bonus_linefk": serialize.data,
-            }
-        )
+class BonusLineView(APIView, BonusLineViewGenericListView):
+    pass

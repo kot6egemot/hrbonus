@@ -5,31 +5,17 @@ from rest_framework.views import APIView
 
 from base.models import Lines
 from base.serializers.bonus_serializer import LinesSerializer
-from base.views.utils import delete_props
+from base.views.utils import delete_props, BaseGenericListView
 
 
-class LinesView(APIView):
+class LinesViewGenericListView(BaseGenericListView):
+    _model = Lines
+    _param_entity = 'line'
+    _serialize = LinesSerializer
+    _hide_columns = ['LineId']
 
-    def get(self, request):
-        lineses = Lines.objects.all()
-        columns = Lines.get_columns(hide_columns=['LineId'])
 
-
-        prop_columns = {
-            'editable_columns': Lines.editable_columns(),
-            'depend_columns': Lines.displayed_foreign_fields()
-        }
-
-        serialize = LinesSerializer(lineses, many=True)
-
-        return JsonResponse(
-            {
-                "result": True,
-                "line": serialize.data,
-                'columns': columns,
-                "prop_columns": prop_columns
-            }
-        )
+class LinesView(APIView, LinesViewGenericListView):
 
     def post(self, request):
         line_item = request.data
