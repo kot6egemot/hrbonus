@@ -7,6 +7,7 @@ from base.models import Bonuses_Summary, Lines
 from base.serializers.bonus_serializer import BonusSerializer, LinesDependSerializer
 from base.views.utils import delete_props, BaseGenericListView
 
+
 class BonusViewGenericListView(BaseGenericListView):
     _model = Bonuses_Summary
     _param_entity = 'bonus'

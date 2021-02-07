@@ -33,6 +33,20 @@ class BaseModel(models.Model):
 
     @staticmethod
     def displayed_foreign_fields() -> list:
+        """
+            Для отобраения выпадающего списка зависимой модели необходимо
+            Добавить view на url ->  param_entity из BaseGenericListView + имя столбца
+            Для примера ->  bonus_linefk
+
+            Пример сериалайзера зависимой модели.
+            class LinesDependSerializer(serializers.ModelSerializer):
+                value = serializers.CharField(source='LineId')
+                text = serializers.CharField(source='Name')
+
+                class Meta:
+                    model = Lines
+                    fields = ('value', 'text')
+        """
         return []
 
     @staticmethod
@@ -53,7 +67,7 @@ class Bonuses_Summary(BaseModel):
     FirstName = models.TextField(verbose_name='Имя')
     AddName = models.TextField()
     PositionFK = models.PositiveIntegerField() # +++ Отобразить с другой таблицы.
-    LineFK = models.ForeignKey("Lines", on_delete=models.CASCADE, db_column="LineFK", verbose_name='Линия') # +++ Оторазить с другой таблицы.
+    LineFK = models.ForeignKey("Lines", on_delete=models.CASCADE, related_name='line' , db_column="LineFK", verbose_name='Линия') # +++ Оторазить с другой таблицы.
     PersPart = models.PositiveIntegerField()
     DaysInMonth = models.PositiveIntegerField()
     LeadMoney = models.FloatField()
@@ -70,7 +84,7 @@ class Bonuses_Summary(BaseModel):
 
     @staticmethod
     def displayed_foreign_fields():
-        return ['LineFK']
+        return []
 
     @staticmethod
     def editable_columns():
