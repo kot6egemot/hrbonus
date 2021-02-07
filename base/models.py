@@ -147,6 +147,9 @@ class IndividualChanges(BaseModel):
     def editable_columns():
         return ["PersNr", "HourlyRate", "LineFk", "PositionFk"]
 
+    @staticmethod
+    def displayed_foreign_fields():
+        return ['LineFk']
 
 class Position(BaseModel):
     PositionID = models.CharField(primary_key=True, max_length=10)
