@@ -4,7 +4,7 @@ from base.models import Bonuses_Summary, Lines, Position, Constant, IndividualCh
 
 class BonusSerializer(serializers.ModelSerializer):
     PositionFK = serializers.CharField()
-    LineFK = serializers.CharField(read_only=True, source='LineFK.Name') #Поле зависимой модели.
+    LineFK = serializers.CharField(read_only=True, source='LineFK.Name')  # Поле зависимой модели.
     PersPart = serializers.CharField()
     BO10 = serializers.CharField()
     DaysInMonth = serializers.CharField()
@@ -50,6 +50,7 @@ class LinesSerializer(serializers.ModelSerializer):
         model = Lines
         fields = '__all__'
 
+
 class LinesDependSerializer(serializers.ModelSerializer):
     value = serializers.CharField(source='LineId')
     text = serializers.CharField(source='Name')
@@ -84,4 +85,3 @@ class IndividualChangesSerializer(serializers.ModelSerializer):
     class Meta:
         model = IndividualChanges
         fields = '__all__'
-
