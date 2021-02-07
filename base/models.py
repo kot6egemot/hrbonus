@@ -52,8 +52,8 @@ class Bonuses_Summary(BaseModel):
     LastName = models.TextField(verbose_name='Фамилия')
     FirstName = models.TextField(verbose_name='Имя')
     AddName = models.TextField()
-    PositionFK = models.PositiveIntegerField()
-    LineFK = models.ForeignKey("Lines", on_delete=models.CASCADE, db_column="LineFK", verbose_name='Линия')
+    PositionFK = models.PositiveIntegerField() # +++ Отобразить с другой таблицы.
+    LineFK = models.ForeignKey("Lines", on_delete=models.CASCADE, db_column="LineFK", verbose_name='Линия') # +++ Оторазить с другой таблицы.
     PersPart = models.PositiveIntegerField()
     DaysInMonth = models.PositiveIntegerField()
     LeadMoney = models.FloatField()
@@ -61,7 +61,9 @@ class Bonuses_Summary(BaseModel):
     OneTimeMoney = models.FloatField()
     LeadHours = models.PositiveIntegerField()
     TeachHours = models.PositiveIntegerField()
-    TotalExtMoney = models.FloatField()
+    TotalExtMoney = models.FloatField() # +++ Вычислямое поле
+    ExtHours = models.PositiveIntegerField() # +++ Вычислямое поле
+
 
     class Meta:
         db_table = 'bonuses_summary'
@@ -72,7 +74,7 @@ class Bonuses_Summary(BaseModel):
 
     @staticmethod
     def editable_columns():
-        return ["LeadMoney", "TeachMoney", "PersPart", 'LineFK']
+        return ["OneTimeMoney"]
 
 
 class Lines(BaseModel):
@@ -93,7 +95,43 @@ class Lines(BaseModel):
 
     @staticmethod
     def editable_columns():
-        return ["LeadMoney", "TeachMoney", "PersPart"]
+        return ["EffectivePlan", "EffectiveFact", "ErrorPlan", "ErrorFact", "Decision"]
+
+
+class Constant(BaseModel):
+    Year = models.TextField(verbose_name='Год')  # int
+    Month = models.TextField(verbose_name='Месяц')  # int
+
+    PersPart = models.CharField(primary_key=True, max_length=10)
+    DaysInMonth = models.TextField()
+    LeadMultiplier = models.TextField()
+    extMultiplier = models.TextField()
+
+
+    class Meta:
+        db_table = 'constants'
+
+
+    @staticmethod
+    def editable_columns():
+        return ["PersPart", "DayslnMonth", "LeadMultiplier", "extMultiplier"]
+
+
+class IndividualChanges(BaseModel):
+    Year = models.TextField(verbose_name='Год')  # int
+    Month = models.TextField(verbose_name='Месяц')  # int
+
+    PersNr = models.CharField(primary_key=True, max_length=10)
+    HourlyRate = models.TextField()
+    LineFk = models.TextField()
+    PositionFk = models.TextField()
+
+    class Meta:
+        db_table = 'individualchanges'
+
+    @staticmethod
+    def editable_columns():
+        return ["PersNr", "HourlyRate", "LineFk", "PositionFk"]
 
 
 class Position(BaseModel):

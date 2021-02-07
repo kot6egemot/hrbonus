@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from base.models import Bonuses_Summary, Lines, Position
+from base.models import Bonuses_Summary, Lines, Position, Constant, IndividualChanges
 
 
 class BonusSerializer(serializers.ModelSerializer):
@@ -13,6 +13,7 @@ class BonusSerializer(serializers.ModelSerializer):
     OneTimeMoney = serializers.CharField()
     LeadHours = serializers.CharField()
     TeachHours = serializers.CharField()
+    # ExtHours = serializers.CharField()
     TotalExtMoney = serializers.CharField()
     BO46 = serializers.CharField()
     BO19 = serializers.CharField()
@@ -59,11 +60,30 @@ class LinesDependSerializer(serializers.ModelSerializer):
         fields = ('value', 'text')
 
 
-class PositionSerializer(serializers.ModelSerializer):
-    PositionID = serializers.CharField()
-    PositionName = serializers.CharField()
-    HourlyRate = serializers.CharField()
+
+class ConstantsSerializer(serializers.ModelSerializer):
+    Year = serializers.CharField()
+    Month = serializers.CharField()
+    PersPart = serializers.CharField()
+    DaysInMonth = serializers.CharField()
+    LeadMultiplier = serializers.CharField()
+    extMultiplier = serializers.CharField()
 
     class Meta:
-        model = Position
+        model = Constant
         fields = '__all__'
+
+
+class IndividualChangesSerializer(serializers.ModelSerializer):
+    Year = serializers.CharField()
+    Month = serializers.CharField()
+
+    PersNr = serializers.CharField()
+    HourlyRate = serializers.CharField()
+    LineFk = serializers.CharField()
+    PositionFk = serializers.CharField()
+
+    class Meta:
+        model = IndividualChanges
+        fields = '__all__'
+
