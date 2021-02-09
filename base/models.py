@@ -59,6 +59,9 @@ class BaseModel(models.Model):
         """ Поля которые должны менятся в представлении при измении выбора в Select."""
         return []
 
+    @staticmethod
+    def forms_columns():
+        return []
 
 class Bonuses_Summary(BaseModel):
     LastName = models.TextField(verbose_name='Фамилия')
@@ -168,6 +171,9 @@ class IndividualChanges(BaseModel):
     def depend_select_columns():
         return ['HourlyRate']
 
+    @staticmethod
+    def forms_columns():
+        return []
 
 class Position(BaseModel):
     PositionID = models.CharField(primary_key=True, max_length=10)

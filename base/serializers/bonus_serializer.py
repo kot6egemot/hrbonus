@@ -92,6 +92,18 @@ class IndividualChangesSerializer(serializers.ModelSerializer):
         full_name = person.FirstName + ' ' + person.LastName
         return full_name
 
+# Для загрузки людей в Select Column.
+# Форма создания
+class IndividualBonusDependSerializer(serializers.ModelSerializer):
+    value = serializers.CharField(source='PersNr')
+    text = serializers.CharField(source='LastName')
+
+    class Meta:
+        model = Bonuses_Summary
+        fields = ('value', 'text')
+
+
+
 class PostionDependSerializer(serializers.ModelSerializer):
     value = serializers.CharField(source='PositionID')
     text = serializers.CharField(source='PositionName')
