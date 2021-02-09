@@ -11,7 +11,8 @@ class BaseGenericListView:
         columns = self._model.get_columns(hide_columns=self._hide_columns)
         prop_columns = {
             'editable_columns': self._model.editable_columns(),
-            'depend_columns': self._model.displayed_foreign_fields()
+            'select_columns': self._model.displayed_foreign_fields(),
+            'depend_select_columns': self._model.depend_select_columns(),
         }
         serialize = self._serialize(entity, many=True)
 

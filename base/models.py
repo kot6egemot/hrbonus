@@ -53,6 +53,11 @@ class BaseModel(models.Model):
     def editable_columns() -> list:
         return []
 
+    @staticmethod
+    def depend_select_columns() -> list:
+        """ Поля которые должны менятся в представлении при измении выбора в Select."""
+        return []
+
 
 class Bonuses_Summary(BaseModel):
     Year = models.TextField(verbose_name='Год')  # int
@@ -66,8 +71,9 @@ class Bonuses_Summary(BaseModel):
     LastName = models.TextField(verbose_name='Фамилия')
     FirstName = models.TextField(verbose_name='Имя')
     AddName = models.TextField()
-    PositionFK = models.PositiveIntegerField() # +++ Отобразить с другой таблицы.
-    LineFK = models.ForeignKey("Lines", on_delete=models.CASCADE, related_name='line' , db_column="LineFK", verbose_name='Линия') # +++ Оторазить с другой таблицы.
+    PositionFK = models.PositiveIntegerField()  # +++ Отобразить с другой таблицы.
+    LineFK = models.ForeignKey("Lines", on_delete=models.CASCADE, related_name='line', db_column="LineFK",
+                               verbose_name='Линия')  # +++ Оторазить с другой таблицы.
     PersPart = models.PositiveIntegerField()
     DaysInMonth = models.PositiveIntegerField()
     LeadMoney = models.FloatField()
@@ -75,9 +81,8 @@ class Bonuses_Summary(BaseModel):
     OneTimeMoney = models.FloatField()
     LeadHours = models.PositiveIntegerField()
     TeachHours = models.PositiveIntegerField()
-    TotalExtMoney = models.FloatField() # +++ Вычислямое поле
-    ExtHours = models.PositiveIntegerField() # +++ Вычислямое поле
-
+    TotalExtMoney = models.FloatField()  # +++ Вычислямое поле
+    ExtHours = models.PositiveIntegerField()  # +++ Вычислямое поле
 
     class Meta:
         db_table = 'bonuses_summary'
@@ -121,10 +126,8 @@ class Constant(BaseModel):
     LeadMultiplier = models.TextField()
     extMultiplier = models.TextField()
 
-
     class Meta:
         db_table = 'constants'
-
 
     @staticmethod
     def editable_columns():
@@ -143,13 +146,18 @@ class IndividualChanges(BaseModel):
     class Meta:
         db_table = 'individualchanges'
 
+
     @staticmethod
     def editable_columns():
-        return ["PersNr", "HourlyRate", "LineFk", "PositionFk"]
+        return ["HourlyRate", "LineFk", "PositionFk"]
 
     @staticmethod
     def displayed_foreign_fields():
-        return ['LineFk']
+        return ['LineFk', 'PositionFk']
+
+    @staticmethod
+    def depend_select_columns():
+        return ['HourlyRate']
 
 class Position(BaseModel):
     PositionID = models.CharField(primary_key=True, max_length=10)

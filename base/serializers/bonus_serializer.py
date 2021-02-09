@@ -77,7 +77,8 @@ class IndividualChangesSerializer(serializers.ModelSerializer):
     Year = serializers.CharField()
     Month = serializers.CharField()
 
-    PersNr = serializers.CharField()
+    PersNr = serializers.SerializerMethodField()
+
     HourlyRate = serializers.CharField()
     LineFk = serializers.CharField()
     PositionFk = serializers.CharField()
@@ -85,3 +86,17 @@ class IndividualChangesSerializer(serializers.ModelSerializer):
     class Meta:
         model = IndividualChanges
         fields = '__all__'
+
+    def get_PersNr(self, instance):
+        print(instance.Year, instance.Month, instance.PersNr)
+        person = Bonuses_Summary.objects.filter(Year=instance.Year, Month=instance.Month, PersNr=instance.PersNr).first()
+        full_name = person.FirstName + ' ' + person.LastName
+        return full_name
+
+class PostionDependSerializer(serializers.ModelSerializer):
+    value = serializers.CharField(source='PositionID')
+    text = serializers.CharField(source='PositionName')
+
+    class Meta:
+        model = Position
+        fields = ('value', 'text')
