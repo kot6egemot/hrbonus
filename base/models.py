@@ -14,6 +14,7 @@ class BaseModel(models.Model):
     def get_columns(cls, hide_columns=None):
         if hide_columns is None:
             hide_columns = list()
+        print(hide_columns)
         fields = cls.get_model_fields()
         displayed_foreign_fields = cls.displayed_foreign_fields()
         columns = [{'text': 'Actions', 'value': 'Actions'}] \
@@ -60,29 +61,38 @@ class BaseModel(models.Model):
 
 
 class Bonuses_Summary(BaseModel):
-    Year = models.TextField(verbose_name='Год')  # int
-    Month = models.TextField(verbose_name='Месяц')  # int
-    PersNr = models.CharField(primary_key=True, max_length=10)
-
-    BO46 = models.FloatField()
-    BO19 = models.FloatField()
-    BO10 = models.PositiveIntegerField()
-
     LastName = models.TextField(verbose_name='Фамилия')
     FirstName = models.TextField(verbose_name='Имя')
+
+
+    PositionFK = models.ForeignKey("Position", db_column="PositionFK",  related_name='position',  verbose_name='Позиция',
+                                   on_delete=models.CASCADE, )  # +++ Отобразить с другой таблицы.
+
+
+    LineFK = models.ForeignKey("Lines", related_name='line', db_column="LineFK",
+                               on_delete=models.CASCADE, verbose_name='Линия')  # +++ Оторазить с другой таблицы.
+
+
+    BO10 = models.PositiveIntegerField(verbose_name="Производственная часть")
+    PersPart = models.PositiveIntegerField(verbose_name="Индивидуальная часть")
+    BonusMultiplier = models.PositiveIntegerField(verbose_name="Коэф. премирования")
+    DaysInMonth = models.PositiveIntegerField(verbose_name="Норма дней/месяц")
+    LeadMoney = models.FloatField(verbose_name="Надбавка за бригадирство")
+    TeachMoney = models.FloatField(verbose_name="Надбавка за наставничество")
+    OneTimeMoney = models.FloatField(verbose_name="Единовременные премии")
+    LeadHours = models.PositiveIntegerField(verbose_name="Часы управления бригадой")
+    TeachHours = models.PositiveIntegerField(verbose_name="Часы наставничества")
+    ExtHours = models.PositiveIntegerField(verbose_name="Часы расширения обязанностей")  # +++ Вычислямое поле
+    TotalExtMoney = models.FloatField(verbose_name="Расширение обязанностей")  # +++ Вычислямое поле
+    PersNr = models.CharField(primary_key=True, max_length=10, verbose_name="Персональный номер SAP")
+
+    Year = models.TextField(verbose_name='Год')  # int
+    Month = models.TextField(verbose_name='Месяц')  # int
+
+    # Не отображать в таблице
+    BO46 = models.FloatField()
+    BO19 = models.FloatField()
     AddName = models.TextField()
-    PositionFK = models.PositiveIntegerField()  # +++ Отобразить с другой таблицы.
-    LineFK = models.ForeignKey("Lines", on_delete=models.CASCADE, related_name='line', db_column="LineFK",
-                               verbose_name='Линия')  # +++ Оторазить с другой таблицы.
-    PersPart = models.PositiveIntegerField()
-    DaysInMonth = models.PositiveIntegerField()
-    LeadMoney = models.FloatField()
-    TeachMoney = models.FloatField()
-    OneTimeMoney = models.FloatField()
-    LeadHours = models.PositiveIntegerField()
-    TeachHours = models.PositiveIntegerField()
-    TotalExtMoney = models.FloatField()  # +++ Вычислямое поле
-    ExtHours = models.PositiveIntegerField()  # +++ Вычислямое поле
 
     class Meta:
         db_table = 'bonuses_summary'
@@ -98,7 +108,7 @@ class Bonuses_Summary(BaseModel):
 
 class Lines(BaseModel):
     LineId = models.CharField(primary_key=True, max_length=10)
-    Name = models.TextField()
+    Name = models.TextField(verbose_name="Линия")
     CostCenter = models.TextField()
     EffectivePlan = models.TextField()
     EffectiveFact = models.TextField()
@@ -122,7 +132,7 @@ class Constant(BaseModel):
     Month = models.TextField(verbose_name='Месяц')  # int
 
     PersPart = models.CharField(primary_key=True, max_length=10)
-    DaysInMonth = models.TextField()
+    DaysInMonth = models.TextField(verbose_name="Норма дней/месяц")
     LeadMultiplier = models.TextField()
     extMultiplier = models.TextField()
 
@@ -138,14 +148,13 @@ class IndividualChanges(BaseModel):
     Year = models.TextField(verbose_name='Год')  # int
     Month = models.TextField(verbose_name='Месяц')  # int
 
-    PersNr = models.CharField(primary_key=True, max_length=10)
-    HourlyRate = models.TextField()
-    LineFk = models.TextField()
-    PositionFk = models.TextField()
+    PersNr = models.CharField(primary_key=True, max_length=10, verbose_name="Сотрудник")
+    HourlyRate = models.TextField(verbose_name="Часовая ставка, Оклад")
+    LineFk = models.TextField(verbose_name="Линия")
+    PositionFk = models.TextField(verbose_name="Позиция")
 
     class Meta:
         db_table = 'individualchanges'
-
 
     @staticmethod
     def editable_columns():
@@ -159,10 +168,11 @@ class IndividualChanges(BaseModel):
     def depend_select_columns():
         return ['HourlyRate']
 
+
 class Position(BaseModel):
     PositionID = models.CharField(primary_key=True, max_length=10)
     PositionName = models.TextField()
-    HourlyRate = models.TextField()
+    HourlyRate = models.TextField(verbose_name="Часовая ставка, Оклад")
 
     class Meta:
         db_table = 'positions'

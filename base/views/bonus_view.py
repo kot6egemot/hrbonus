@@ -12,6 +12,7 @@ class BonusViewGenericListView(BaseGenericListView):
     _model = Bonuses_Summary
     _param_entity = 'bonus'
     _serialize = BonusSerializer
+    _hide_columns = ['BO46', 'BO19', 'AddName']
 
 class BonusLineViewGenericListView(BaseGenericListView):
     _model = Lines

@@ -3,7 +3,7 @@ from base.models import Bonuses_Summary, Lines, Position, Constant, IndividualCh
 
 
 class BonusSerializer(serializers.ModelSerializer):
-    PositionFK = serializers.CharField()
+    PositionFK = serializers.CharField(read_only=True, source='PositionFK.PositionName')
     LineFK = serializers.CharField(read_only=True, source='LineFK.Name')  # Поле зависимой модели.
     PersPart = serializers.CharField()
     BO10 = serializers.CharField()
@@ -13,10 +13,9 @@ class BonusSerializer(serializers.ModelSerializer):
     OneTimeMoney = serializers.CharField()
     LeadHours = serializers.CharField()
     TeachHours = serializers.CharField()
-    # ExtHours = serializers.CharField()
+    BonusMultiplier = serializers.CharField()
+    ExtHours = serializers.CharField()
     TotalExtMoney = serializers.CharField()
-    BO46 = serializers.CharField()
-    BO19 = serializers.CharField()
 
     class Meta:
         model = Bonuses_Summary
