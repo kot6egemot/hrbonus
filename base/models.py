@@ -75,7 +75,6 @@ class Bonuses_Summary(BaseModel):
     LineFK = models.ForeignKey("Lines", related_name='line', db_column="LineFK",
                                on_delete=models.CASCADE, verbose_name='Линия')  # +++ Оторазить с другой таблицы.
 
-
     BO10 = models.PositiveIntegerField(verbose_name="Производственная часть")
     PersPart = models.PositiveIntegerField(verbose_name="Индивидуальная часть")
     BonusMultiplier = models.PositiveIntegerField(verbose_name="Коэф. премирования")
@@ -106,8 +105,7 @@ class Bonuses_Summary(BaseModel):
 
     @staticmethod
     def editable_columns():
-        return ["OneTimeMoney"]
-
+        return ["OneTimeMoney", "ExtHours", "PersPart"]
 
 class Lines(BaseModel):
     LineId = models.CharField(primary_key=True, max_length=10)

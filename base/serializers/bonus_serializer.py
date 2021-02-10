@@ -17,6 +17,8 @@ class BonusSerializer(serializers.ModelSerializer):
     ExtHours = serializers.CharField()
     TotalExtMoney = serializers.CharField()
 
+    ExtMultiplier = serializers.SerializerMethodField()
+
     class Meta:
         model = Bonuses_Summary
         fields = '__all__'
@@ -34,6 +36,9 @@ class BonusSerializer(serializers.ModelSerializer):
                 pass
         return data
 
+    def get_ExtMultiplier(self, instance):
+        constant = Constant.objects.filter(Year=instance.Year, Month=instance.Month).first()
+        return constant.extMultiplier
 
 class LinesSerializer(serializers.ModelSerializer):
     LineId = serializers.CharField()
