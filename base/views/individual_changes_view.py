@@ -4,7 +4,7 @@ from rest_framework.views import APIView
 from base.models import IndividualChanges, Lines, Position, Bonuses_Summary
 from base.serializers.bonus_serializer import IndividualChangesSerializer, LinesDependSerializer, \
     PostionDependSerializer, IndividualBonusDependSerializer
-from base.views.utils import BaseGenericListView, get_month_year
+from base.views.utils import BaseGenericListView, get_month_year, delete_props
 
 
 class IndividualChangesViewGenericListView(BaseGenericListView):
@@ -41,9 +41,32 @@ class IndividualChangesView(APIView, IndividualChangesViewGenericListView):
             PositionFk=position.PositionID
         )
         serialize = IndividualChangesSerializer(individual_change)
+        data = serialize.data
+        data["changed"] = True
         return JsonResponse({
             "result": True,
-            "new_item": serialize.data
+            "new_item": data
+        })
+
+    def post(self, request):
+        bonus_item = request.data
+
+        # if isinstance(bonus_item, list):
+        #     for item in bonus_item:
+        #         save_bonus_item(item)
+        #     serialize = BonusSerializer(Bonuses_Summary.objects.all(), many=True)
+        #     return JsonResponse({"result": True, "items": serialize.data})
+        # else:
+        #     item = save_bonus_item(bonus_item)
+        #     serialize = BonusSerializer(item)
+        #     return JsonResponse({"result": True, "item": serialize.data})
+
+        item = request.data
+        item =  delete_props(item)
+
+        return JsonResponse({
+            'result': True,
+            'item': item
         })
 
 
