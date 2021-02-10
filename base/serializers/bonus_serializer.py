@@ -101,13 +101,14 @@ class IndividualChangesSerializer(serializers.ModelSerializer):
 # Форма создания
 class IndividualBonusDependSerializer(serializers.ModelSerializer):
     value = serializers.CharField(source='PersNr')
-    text = serializers.CharField(source='LastName')
+    text = serializers.SerializerMethodField()
 
     class Meta:
         model = Bonuses_Summary
         fields = ('value', 'text')
 
-
+    def get_text(self, instance):
+        return instance.full_name
 
 class PostionDependSerializer(serializers.ModelSerializer):
     value = serializers.CharField(source='PositionID')

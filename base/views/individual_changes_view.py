@@ -58,8 +58,6 @@ class IndividualPositionView(APIView, IndividualChangesPositionViewGenericListVi
 class IndividualPositionDependView(APIView):
     def get(self, request):
         item = Position.objects.get(PositionID=request.GET['PositionFk'])
-        print(item)
-        print(request.GET)
         return JsonResponse(
             {
                 "result": True,

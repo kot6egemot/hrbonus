@@ -107,6 +107,10 @@ class Bonuses_Summary(BaseModel):
     def editable_columns():
         return ["OneTimeMoney", "ExtHours", "PersPart"]
 
+    @property
+    def full_name(self):
+        return f'{self.FirstName} {self.LastName}'
+
 class Lines(BaseModel):
     LineId = models.CharField(primary_key=True, max_length=10)
     Name = models.TextField(verbose_name="Линия")
@@ -167,7 +171,7 @@ class IndividualChanges(BaseModel):
 
     @staticmethod
     def depend_select_columns():
-        return ['HourlyRate']
+        return ['PositionFk']
 
     @staticmethod
     def forms_columns():
