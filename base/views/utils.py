@@ -29,3 +29,8 @@ class BaseGenericListView:
 def delete_props(bonus):
     del bonus['changed']
     return bonus
+
+def get_month_year(request):
+    month = request.GET['month']
+    year = request.GET['year']
+    return month, year

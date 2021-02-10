@@ -4,7 +4,7 @@ from rest_framework.views import APIView
 from base.models import IndividualChanges, Lines, Position, Bonuses_Summary
 from base.serializers.bonus_serializer import IndividualChangesSerializer, LinesDependSerializer, \
     PostionDependSerializer, IndividualBonusDependSerializer
-from base.views.utils import BaseGenericListView
+from base.views.utils import BaseGenericListView, get_month_year
 
 
 class IndividualChangesViewGenericListView(BaseGenericListView):
@@ -26,7 +26,25 @@ class IndividualChangesPositionViewGenericListView(BaseGenericListView):
 
 
 class IndividualChangesView(APIView, IndividualChangesViewGenericListView):
-    pass
+
+    def put(self, request):
+        month, year = get_month_year(request)
+        PersNr = request.data["PersNr"]
+        person_bonus = Bonuses_Summary.objects.filter(Month=month, Year=year, PersNr=PersNr).first()
+        position = Position.objects.filter(PositionID=person_bonus.LineFK).first()
+        individual_change = IndividualChanges(
+            Month=month,
+            Year=year,
+            PersNr=person_bonus.PersNr,
+            LineFk=person_bonus.LineFK,
+            HourlyRate=position.HourlyRate,
+            PositionFk=position.PositionID
+        )
+        serialize = IndividualChangesSerializer(individual_change)
+        return JsonResponse({
+            "result": True,
+            "new_item": serialize.data
+        })
 
 
 class IndividualLineView(APIView, IndividualChangesLineViewGenericListView):
@@ -51,11 +69,10 @@ class IndividualPositionDependView(APIView):
             }
         )
 
+
 class IndividualCreateDependView(APIView):
     def get(self, request):
-
-        month = request.GET['month']
-        year = request.GET['year']
+        month, year = get_month_year(request)
 
         items = Bonuses_Summary.objects.filter(Month=month, Year=year).all()
         serializer = IndividualBonusDependSerializer(items, many=True)
