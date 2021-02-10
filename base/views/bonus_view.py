@@ -19,17 +19,34 @@ class BonusLineViewGenericListView(BaseGenericListView):
     _param_entity = 'bonus_linefk'
     _serialize = LinesDependSerializer
 
+def save_bonus_item(data):
+    year = data['Year']
+    month = data['Month']
+
+    bonus = Bonuses_Summary.objects.filter(PersNr=data['PersNr'], Year=year, Month=month).first()
+
+    bonus.PersPart = data['PersPart']
+    bonus.BonusMultiplier = data['BonusMultiplier']
+    bonus.OneTimeMoney = data['OneTimeMoney']
+    bonus.ExtHours = data['ExtHours']
+    bonus.TotalExtMoney = data['TotalExtMoney']
+    bonus.save()
+
+    return bonus
 
 class BonusView(APIView, BonusViewGenericListView):
     def post(self, request):
         bonus_item = request.data
+
         if isinstance(bonus_item, list):
-            bonus_item = [delete_props(bonus) for bonus in bonus_item]
-            return JsonResponse({"result": True, "items": bonus_item})
+            for item in bonus_item:
+                save_bonus_item(item)
+            serialize = BonusSerializer(Bonuses_Summary.objects.all(), many=True)
+            return JsonResponse({"result": True, "items": serialize.data})
         else:
-            delete_props(bonus_item)
-            bonus_item["PositionFK"] = randint(1, 100)
-            return JsonResponse({"result": True, "item": bonus_item})
+            item = save_bonus_item(bonus_item)
+            serialize = BonusSerializer(item)
+            return JsonResponse({"result": True, "item": serialize.data})
 
 class BonusLineView(APIView, BonusLineViewGenericListView):
     pass
