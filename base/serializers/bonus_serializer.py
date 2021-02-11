@@ -39,6 +39,9 @@ class BonusSerializer(serializers.ModelSerializer):
     def get_ExtMultiplier(self, instance):
         constant = Constant.objects.filter(Year=instance.Year, Month=instance.Month).first()
         # Что то возвращать по умолчанию?
+        if not constant:
+            # temporary
+            return 1
         return constant.extMultiplier
 
 class LinesSerializer(serializers.ModelSerializer):

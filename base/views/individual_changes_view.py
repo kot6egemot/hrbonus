@@ -25,9 +25,30 @@ class IndividualChangesPositionViewGenericListView(BaseGenericListView):
     _serialize = PostionDependSerializer
 
 
+def save_individual_changes(data):
+    try:
+        individual_change = IndividualChanges.objects.filter(Year=data['year'],
+                                                             Month=data['month'],
+                                                             PersNr=data['PersNr']
+                                                             ).first()
+    except IndividualChanges.DoesNotExist:
+        individual_change = IndividualChanges(
+            Year=data['year'],
+            Month=data['month'],
+            PersNr=data['PersNr']
+        )
+    individual_change.HourlyRate = data['HourlyRate']
+    individual_change.LineFk = data['LineFK']
+    individual_change.PositionFk = data['PositionFk']
+    individual_change.save()
+
+    return individual_change
+
+
 class IndividualChangesView(APIView, IndividualChangesViewGenericListView):
 
     def put(self, request):
+        # Мы не коммитем здесь.
         month, year = get_month_year(request)
         PersNr = request.data["PersNr"]
         person_bonus = Bonuses_Summary.objects.filter(Month=month, Year=year, PersNr=PersNr).first()
@@ -49,25 +70,17 @@ class IndividualChangesView(APIView, IndividualChangesViewGenericListView):
         })
 
     def post(self, request):
-        bonus_item = request.data
+        individual_items = request.data
 
-        # if isinstance(bonus_item, list):
-        #     for item in bonus_item:
-        #         save_bonus_item(item)
-        #     serialize = BonusSerializer(Bonuses_Summary.objects.all(), many=True)
-        #     return JsonResponse({"result": True, "items": serialize.data})
-        # else:
-        #     item = save_bonus_item(bonus_item)
-        #     serialize = BonusSerializer(item)
-        #     return JsonResponse({"result": True, "item": serialize.data})
-
-        item = request.data
-        item =  delete_props(item)
-
-        return JsonResponse({
-            'result': True,
-            'item': item
-        })
+        if isinstance(individual_items, list):
+            for item in individual_items:
+                save_individual_changes(item)
+            serialize = IndividualChangesSerializer(IndividualChanges.objects.all(), many=True)
+            return JsonResponse({"result": True, "items": serialize.data})
+        else:
+            item = save_individual_changes(individual_items)
+            serialize = IndividualChangesSerializer(item)
+            return JsonResponse({"result": True, "item": serialize.data})
 
 
 class IndividualLineView(APIView, IndividualChangesLineViewGenericListView):
