@@ -6,8 +6,8 @@ class BaseGenericListView:
     _serialize = None
     _hide_columns = []
 
-    def get(self, request):
-        entity = self._model.objects.all()[:3]
+    def get(self):
+        entity = self._model.objects.all()
         columns = self._model.get_columns(hide_columns=self._hide_columns)
         prop_columns = {
             'editable_columns': self._model.editable_columns(),
