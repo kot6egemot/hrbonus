@@ -1,3 +1,5 @@
+import uuid
+
 from django.http import JsonResponse
 from rest_framework.views import APIView
 
@@ -11,6 +13,7 @@ class IndividualChangesViewGenericListView(BaseGenericListView):
     _model = IndividualChanges
     _param_entity = 'individual_change'
     _serialize = IndividualChangesSerializer
+    _hide_columns = ['ID']
 
 
 class IndividualChangesLineViewGenericListView(BaseGenericListView):
@@ -26,22 +29,11 @@ class IndividualChangesPositionViewGenericListView(BaseGenericListView):
 
 
 def save_individual_changes(data):
-    try:
-        individual_change = IndividualChanges.objects.filter(Year=data['year'],
-                                                             Month=data['month'],
-                                                             PersNr=data['PersNr']
-                                                             ).first()
-    except IndividualChanges.DoesNotExist:
-        individual_change = IndividualChanges(
-            Year=data['year'],
-            Month=data['month'],
-            PersNr=data['PersNr']
-        )
+    individual_change = IndividualChanges.objects.get(ID=data['ID'] )
     individual_change.HourlyRate = data['HourlyRate']
-    individual_change.LineFk = data['LineFK']
-    individual_change.PositionFk = data['PositionFk']
+    individual_change.LineFK = data['LineFK']
+    individual_change.PositionFK = data['PositionFK']
     individual_change.save()
-
     return individual_change
 
 
@@ -52,18 +44,24 @@ class IndividualChangesView(APIView, IndividualChangesViewGenericListView):
         month, year = get_month_year(request)
         PersNr = request.data["PersNr"]
         person_bonus = Bonuses_Summary.objects.filter(Month=month, Year=year, PersNr=PersNr).first()
-        position = Position.objects.filter(PositionID=person_bonus.LineFK).first()
+        position = person_bonus.PositionFK
+        line = person_bonus.LineFK
+
         individual_change = IndividualChanges(
+            ID=uuid.uuid4(),
             Month=month,
             Year=year,
             PersNr=person_bonus.PersNr,
-            LineFk=person_bonus.LineFK,
+            LineFK=line.LineId,
             HourlyRate=position.HourlyRate,
-            PositionFk=position.PositionID
+            PositionFK=position.PositionID,
         )
+
+        individual_change.save()
         serialize = IndividualChangesSerializer(individual_change)
         data = serialize.data
-        data["changed"] = True
+        # data["changed"] = False
+
         return JsonResponse({
             "result": True,
             "new_item": data
@@ -93,7 +91,7 @@ class IndividualPositionView(APIView, IndividualChangesPositionViewGenericListVi
 
 class IndividualPositionDependView(APIView):
     def get(self, request):
-        item = Position.objects.get(PositionID=request.GET['PositionFk'])
+        item = Position.objects.get(PositionID=request.GET['PositionFK'])
         return JsonResponse(
             {
                 "result": True,

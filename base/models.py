@@ -14,7 +14,6 @@ class BaseModel(models.Model):
     def get_columns(cls, hide_columns=None):
         if hide_columns is None:
             hide_columns = list()
-        print(hide_columns)
         fields = cls.get_model_fields()
         displayed_foreign_fields = cls.displayed_foreign_fields()
         columns = [{'text': 'Actions', 'value': 'Actions'}] \
@@ -150,28 +149,30 @@ class Constant(BaseModel):
 
 
 class IndividualChanges(BaseModel):
+    ID = models.TextField(primary_key=True ,verbose_name='UUID', max_length=100)
+
     Year = models.TextField(verbose_name='Год')  # int
     Month = models.TextField(verbose_name='Месяц')  # int
 
-    PersNr = models.CharField(primary_key=True, max_length=10, verbose_name="Сотрудник")
+    PersNr = models.CharField(max_length=10, verbose_name="Сотрудник")
     HourlyRate = models.TextField(verbose_name="Часовая ставка, Оклад")
-    LineFk = models.TextField(verbose_name="Линия")
-    PositionFk = models.TextField(verbose_name="Позиция")
+    LineFK = models.TextField(verbose_name="Линия")
+    PositionFK = models.TextField(verbose_name="Позиция")
 
     class Meta:
         db_table = 'individualchanges'
 
     @staticmethod
     def editable_columns():
-        return ["HourlyRate", "LineFk", "PositionFk"]
+        return ["HourlyRate", "LineFK", "PositionFK"]
 
     @staticmethod
     def displayed_foreign_fields():
-        return ['LineFk', 'PositionFk']
+        return ['LineFK', 'PositionFK']
 
     @staticmethod
     def depend_select_columns():
-        return ['PositionFk']
+        return ['PositionFK']
 
     @staticmethod
     def forms_columns():
