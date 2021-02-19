@@ -29,7 +29,7 @@ class IndividualChangesPositionViewGenericListView(BaseGenericListView):
 
 
 def save_individual_changes(data):
-    individual_change = IndividualChanges.objects.get(ID=data['ID'] )
+    individual_change = IndividualChanges.objects.get(ID=data['ID'])
     individual_change.HourlyRate = data['HourlyRate']
     individual_change.LineFK = data['LineFK']
     individual_change.PositionFK = data['PositionFK']
@@ -79,6 +79,12 @@ class IndividualChangesView(APIView, IndividualChangesViewGenericListView):
             item = save_individual_changes(individual_items)
             serialize = IndividualChangesSerializer(item)
             return JsonResponse({"result": True, "item": serialize.data})
+
+    def delete(self, request):
+        id = request.data['ID']
+        individual_change = IndividualChanges.objects.get(ID=id)
+        individual_change.delete()
+        return JsonResponse({"result": True, })
 
 
 class IndividualLineView(APIView, IndividualChangesLineViewGenericListView):
