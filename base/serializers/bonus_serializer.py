@@ -3,6 +3,8 @@ from base.models import Bonuses_Summary, Lines, Position, Constant, IndividualCh
 
 
 class BonusSerializer(serializers.ModelSerializer):
+    ID = serializers.CharField()
+
     PositionFK = serializers.CharField(read_only=True, source='PositionFK.PositionName')
     LineFK = serializers.CharField(read_only=True, source='LineFK.Name')  # Поле зависимой модели.
     PersPart = serializers.CharField()
@@ -45,6 +47,8 @@ class BonusSerializer(serializers.ModelSerializer):
         return constant.extMultiplier
 
 class LinesSerializer(serializers.ModelSerializer):
+    ID = serializers.CharField()
+
     LineId = serializers.CharField()
     Name = serializers.CharField()
     CostCenter = serializers.CharField()
@@ -69,6 +73,8 @@ class LinesDependSerializer(serializers.ModelSerializer):
 
 
 class ConstantsSerializer(serializers.ModelSerializer):
+    ID = serializers.CharField()
+
     Year = serializers.CharField()
     Month = serializers.CharField()
     PersPart = serializers.CharField()

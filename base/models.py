@@ -1,3 +1,5 @@
+import uuid
+
 from django.db import models
 
 """
@@ -7,6 +9,9 @@ from django.db import models
 
 
 class BaseModel(models.Model):
+    ID = models.TextField(primary_key=True ,verbose_name='UUID', max_length=100)
+
+
     class Meta:
         abstract = True
 
@@ -85,7 +90,7 @@ class Bonuses_Summary(BaseModel):
     TeachHours = models.PositiveIntegerField(verbose_name="Часы наставничества")
     ExtHours = models.PositiveIntegerField(verbose_name="Часы расширения обязанностей")  # +++ Вычислямое поле
     TotalExtMoney = models.FloatField(verbose_name="Расширение обязанностей")  # +++ Вычислямое поле
-    PersNr = models.CharField(primary_key=True, max_length=10, verbose_name="Персональный номер SAP")
+    PersNr = models.CharField(max_length=10, verbose_name="Персональный номер SAP")
 
     Year = models.TextField(verbose_name='Год')  # int
     Month = models.TextField(verbose_name='Месяц')  # int
@@ -111,14 +116,14 @@ class Bonuses_Summary(BaseModel):
         return f'{self.FirstName} {self.LastName}'
 
 class Lines(BaseModel):
-    LineId = models.CharField(primary_key=True, max_length=10)
+    LineId = models.CharField(max_length=10)
     Name = models.TextField(verbose_name="Линия")
     CostCenter = models.TextField()
-    EffectivePlan = models.TextField()
-    EffectiveFact = models.TextField()
-    ErrorPlan = models.TextField()
-    ErrorFact = models.TextField()
-    Decision = models.TextField()
+    EffectivePlan = models.PositiveIntegerField()
+    EffectiveFact = models.PositiveIntegerField()
+    ErrorPlan = models.PositiveIntegerField()
+    ErrorFact = models.PositiveIntegerField()
+    Decision = models.PositiveIntegerField()
 
     class Meta:
         db_table = 'lines'
@@ -132,13 +137,14 @@ class Lines(BaseModel):
 
 
 class Constant(BaseModel):
+
     Year = models.TextField(verbose_name='Год')  # int
     Month = models.TextField(verbose_name='Месяц')  # int
 
-    PersPart = models.CharField(primary_key=True, max_length=10)
+    PersPart = models.PositiveIntegerField(verbose_name="Персональная часть")
     DaysInMonth = models.TextField(verbose_name="Норма дней/месяц")
-    LeadMultiplier = models.TextField()
-    extMultiplier = models.TextField()
+    LeadMultiplier = models.PositiveIntegerField()
+    extMultiplier = models.PositiveIntegerField()
 
     class Meta:
         db_table = 'constants'
@@ -149,7 +155,6 @@ class Constant(BaseModel):
 
 
 class IndividualChanges(BaseModel):
-    ID = models.TextField(primary_key=True ,verbose_name='UUID', max_length=100)
 
     Year = models.TextField(verbose_name='Год')  # int
     Month = models.TextField(verbose_name='Месяц')  # int
@@ -179,7 +184,7 @@ class IndividualChanges(BaseModel):
         return []
 
 class Position(BaseModel):
-    PositionID = models.CharField(primary_key=True, max_length=10)
+    PositionID = models.CharField(max_length=10)
     PositionName = models.TextField()
     HourlyRate = models.TextField(verbose_name="Часовая ставка, Оклад")
 

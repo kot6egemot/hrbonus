@@ -1,5 +1,6 @@
 import uuid
 
+from django.db import transaction
 from django.http import JsonResponse
 from rest_framework.views import APIView
 
@@ -48,7 +49,7 @@ class IndividualChangesView(APIView, IndividualChangesViewGenericListView):
         line = person_bonus.LineFK
 
         individual_change = IndividualChanges(
-            ID=uuid.uuid4(),
+            ID = uuid.uuid4(),
             Month=month,
             Year=year,
             PersNr=person_bonus.PersNr,
@@ -71,8 +72,12 @@ class IndividualChangesView(APIView, IndividualChangesViewGenericListView):
         individual_items = request.data
 
         if isinstance(individual_items, list):
-            for item in individual_items:
-                save_individual_changes(item)
+            try:
+                with transaction.atomic():
+                    for item in individual_items:
+                        save_individual_changes(item)
+            except Exception:
+                raise Exception('Не удалось сохранить элементы.')
             serialize = IndividualChangesSerializer(IndividualChanges.objects.all(), many=True)
             return JsonResponse({"result": True, "items": serialize.data})
         else:

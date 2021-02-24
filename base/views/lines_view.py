@@ -1,5 +1,6 @@
 from random import randint
 
+from django.db import transaction
 from django.http import JsonResponse
 from rest_framework.views import APIView
 
@@ -9,7 +10,7 @@ from base.views.utils import delete_props, BaseGenericListView
 
 
 def save_line_item(line_date):
-    line = Lines.objects.get(LineId=line_date['LineId'])
+    line = Lines.objects.get(ID=line_date['ID'])
     line.EffectivePlan = line_date['EffectivePlan']
     line.EffectiveFact = line_date['EffectiveFact']
     line.ErrorPlan = line_date['ErrorPlan']
@@ -22,7 +23,7 @@ class LinesViewGenericListView(BaseGenericListView):
     _model = Lines
     _param_entity = 'line'
     _serialize = LinesSerializer
-    _hide_columns = ['LineId']
+    _hide_columns = ['LineId', 'ID']
 
 
 class LinesView(APIView, LinesViewGenericListView):
@@ -31,8 +32,13 @@ class LinesView(APIView, LinesViewGenericListView):
         line_item = request.data
 
         if isinstance(line_item, list):
-            for line in line_item:
-                save_line_item(line)
+            try:
+                with transaction.atomic():
+                    for line in line_item:
+                        save_line_item(line)
+            except Exception:
+                raise Exception('Не удалось сохранить элементы.')
+
             lines = Lines.objects.all()
             serialize = LinesSerializer(lines, many=True)
             return JsonResponse({"result": True, "items": serialize.data})

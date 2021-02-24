@@ -1,3 +1,4 @@
+from django.db import transaction
 from django.http import JsonResponse
 from rest_framework.views import APIView
 
@@ -11,13 +12,15 @@ class ConstantLineViewGenericListView(BaseGenericListView):
     _model = Constant
     _param_entity = 'constant'
     _serialize = ConstantsSerializer
+    _hide_columns = ['ID']
 
 
 def save_constant_item(constant_data):
-    constant = Constant.objects.filter(Year=constant_data['Year'], Month=constant_data['Month']).first()
+    constant = Constant.objects.get(ID=constant_data['ID'])
     constant.PersPart = constant_data['PersPart']
     constant.LeadMultiplier = constant_data['LeadMultiplier']
     constant.extMultiplier = constant_data['extMultiplier']
+    constant.save()
     return constant_data
 
 
@@ -26,8 +29,13 @@ class ConstantView(APIView, ConstantLineViewGenericListView):
         constant_item = request.data
 
         if isinstance(constant_item, list):
-            for constant in constant_item:
-                save_constant_item(constant)
+            try:
+                with transaction.atomic():
+                    for constant in constant_item:
+                        save_constant_item(constant)
+            except Exception:
+                raise Exception('Не удалось сохранить элементы.')
+
             constants = Constant.objects.all()
             serialize = ConstantsSerializer(constants, many=True)
             return JsonResponse({"result": True, "items": serialize.data})
