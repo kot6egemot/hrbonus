@@ -117,6 +117,10 @@ class Bonuses_Summary(BaseModel):
 
 class Lines(BaseModel):
     LineId = models.CharField(max_length=10)
+
+    Year = models.TextField(verbose_name='Год')  # int
+    Month = models.TextField(verbose_name='Месяц')  # int
+
     Name = models.TextField(verbose_name="Линия")
     CostCenter = models.TextField()
     EffectivePlan = models.PositiveIntegerField()
@@ -185,6 +189,10 @@ class IndividualChanges(BaseModel):
 
 class Position(BaseModel):
     PositionID = models.CharField(max_length=10)
+
+    Year = models.TextField(verbose_name='Год')  # int
+    Month = models.TextField(verbose_name='Месяц')  # int
+
     PositionName = models.TextField()
     HourlyRate = models.TextField(verbose_name="Часовая ставка, Оклад")
 
