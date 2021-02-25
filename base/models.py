@@ -116,16 +116,15 @@ class Bonuses_Summary(BaseModel):
 
 
 class LinesRates(BaseModel):
-    Year = models.TextField(verbose_name='Год')  # int
-    Month = models.TextField(verbose_name='Месяц')  # int
-
     LineFK = models.ForeignKey('LinesList', db_column="LineFK", to_field='ID', on_delete=models.CASCADE, verbose_name="Линия")
-
     EffectivePlan = models.FloatField(verbose_name="Эффективность(План)")
     EffectiveFact = models.FloatField(verbose_name="Эффективность(Факт)")
     ErrorPlan = models.FloatField(verbose_name="Брак(План)")
     ErrorFact = models.FloatField(verbose_name="Брак(Факт)")
     Decision = models.PositiveIntegerField(verbose_name="Решение по производственной части")
+
+    Year = models.TextField(verbose_name='Год')  # int
+    Month = models.TextField(verbose_name='Месяц')  # int
 
     class Meta:
         db_table = 'linesrates'
@@ -150,13 +149,13 @@ class LinesList(BaseModel):
 
 
 class Constant(BaseModel):
-    Year = models.TextField(verbose_name='Год')  # int
-    Month = models.TextField(verbose_name='Месяц')  # int
-
     PersPart = models.PositiveIntegerField(verbose_name="Персональная часть (По умолчанию)")
     DaysInMonth = models.PositiveIntegerField(verbose_name="Норма дней/месяц")
     LeadMultiplier = models.FloatField(verbose_name="Коэффициент (Бригадирство)")
     extMultiplier = models.FloatField(verbose_name="Коэффициент (Расширение обязанностей)")
+
+    Year = models.TextField(verbose_name='Год')  # int
+    Month = models.TextField(verbose_name='Месяц')  # int
 
     class Meta:
         db_table = 'constants'
@@ -167,14 +166,14 @@ class Constant(BaseModel):
 
 
 class IndividualChanges(BaseModel):
-    Year = models.TextField(verbose_name='Год')  # int
-    Month = models.TextField(verbose_name='Месяц')  # int
-
     PersNr = models.CharField(max_length=10, verbose_name="Сотрудник")
     HourlyRate = models.TextField(verbose_name="Часовая ставка, Оклад")
     LineFK = models.TextField(verbose_name="Линия")
     PositionFK = models.ForeignKey('Positions', db_column='PositionFK', to_field='ID', verbose_name='Позиция',
                                    on_delete=models.CASCADE)
+
+    Year = models.TextField(verbose_name='Год')  # int
+    Month = models.TextField(verbose_name='Месяц')  # int
 
     class Meta:
         db_table = 'individualchanges'
@@ -198,9 +197,10 @@ class IndividualChanges(BaseModel):
 
 class PositionRates(BaseModel):
     PositionFK = models.CharField(max_length=10)
+    HourlyRate = models.TextField(verbose_name="Часовая ставка, Оклад")
+
     Year = models.TextField(verbose_name='Год')  # int
     Month = models.TextField(verbose_name='Месяц')  # int
-    HourlyRate = models.TextField(verbose_name="Часовая ставка, Оклад")
 
     class Meta:
         db_table = 'positionsrates'
