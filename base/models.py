@@ -116,7 +116,7 @@ class Bonuses_Summary(BaseModel):
         return f'{self.FirstName} {self.LastName}'
 
 class Lines(BaseModel):
-    LineId = models.CharField(max_length=10)
+    LineID = models.CharField(max_length=10)
 
     Year = models.TextField(verbose_name='Год')  # int
     Month = models.TextField(verbose_name='Месяц')  # int
