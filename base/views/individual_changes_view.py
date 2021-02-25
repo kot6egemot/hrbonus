@@ -53,7 +53,7 @@ class IndividualChangesView(APIView, IndividualChangesViewGenericListView):
             Month=month,
             Year=year,
             PersNr=person_bonus.PersNr,
-            LineFK=line.LineId,
+            LineFK=line.LineID,
             HourlyRate=position.HourlyRate,
             PositionFK=position.PositionID,
         )

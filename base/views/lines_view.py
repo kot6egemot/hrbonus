@@ -23,7 +23,7 @@ class LinesViewGenericListView(BaseGenericListView):
     _model = Lines
     _param_entity = 'line'
     _serialize = LinesSerializer
-    _hide_columns = ['LineId', 'ID']
+    _hide_columns = ['LineID', 'ID']
 
 
 class LinesView(APIView, LinesViewGenericListView):

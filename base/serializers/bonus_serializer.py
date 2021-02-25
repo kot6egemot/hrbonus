@@ -49,7 +49,7 @@ class BonusSerializer(serializers.ModelSerializer):
 class LinesSerializer(serializers.ModelSerializer):
     ID = serializers.CharField()
 
-    LineId = serializers.CharField()
+    LineID = serializers.CharField()
     Name = serializers.CharField()
     CostCenter = serializers.CharField()
     EffectivePlan = serializers.CharField()
@@ -64,7 +64,7 @@ class LinesSerializer(serializers.ModelSerializer):
 
 
 class LinesDependSerializer(serializers.ModelSerializer):
-    value = serializers.CharField(source='LineId')
+    value = serializers.CharField(source='LineID')
     text = serializers.CharField(source='Name')
 
     class Meta:
