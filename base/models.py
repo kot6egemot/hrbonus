@@ -133,7 +133,7 @@ class Lines(BaseModel):
         db_table = 'lines'
 
     def __str__(self):
-        return str(self.LineId)
+        return str(self.LineID)
 
     @staticmethod
     def editable_columns():
