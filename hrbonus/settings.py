@@ -85,7 +85,7 @@ WSGI_APPLICATION = 'hrbonus.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'sql_server.pyodbc',
-        'NAME': 'test',
+        'NAME': 'HRBonus',
         'USER': 'sa',
         'PASSWORD': '123',
         'HOST': 'localhost',
