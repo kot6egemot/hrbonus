@@ -3,9 +3,9 @@ from random import randint
 from django.http import JsonResponse
 from rest_framework.views import APIView
 
-from base.models import Bonuses_Summary, Lines
+from base.models import Bonuses_Summary, LinesList
 from base.serializers.bonus_serializer import BonusSerializer, LinesDependSerializer
-from base.views.utils import delete_props, BaseGenericListView
+from base.views.utils import BaseGenericListView
 
 from django.db import transaction
 
@@ -16,7 +16,7 @@ class BonusViewGenericListView(BaseGenericListView):
     _hide_columns = ['BO46', 'BO19', 'AddName', 'ID']
 
 class BonusLineViewGenericListView(BaseGenericListView):
-    _model = Lines
+    _model = LinesList
     _param_entity = 'bonus_linefk'
     _serialize = LinesDependSerializer
 

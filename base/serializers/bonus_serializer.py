@@ -1,12 +1,12 @@
 from rest_framework import serializers
-from base.models import Bonuses_Summary, Lines, Position, Constant, IndividualChanges
+from base.models import Bonuses_Summary, Constant, IndividualChanges, Positions, LinesRates, LinesList
 
 
 class BonusSerializer(serializers.ModelSerializer):
     ID = serializers.CharField()
 
-    PositionFK = serializers.CharField(read_only=True, source='PositionFK.PositionName')
-    LineFK = serializers.CharField(read_only=True, source='LineFK.Name')  # Поле зависимой модели.
+    PositionFK = serializers.CharField()
+    LineFK = serializers.CharField()  # Поле зависимой модели.
     PersPart = serializers.CharField()
     BO10 = serializers.CharField()
     DaysInMonth = serializers.CharField()
@@ -49,9 +49,8 @@ class BonusSerializer(serializers.ModelSerializer):
 class LinesSerializer(serializers.ModelSerializer):
     ID = serializers.CharField()
 
-    LineID = serializers.CharField()
-    Name = serializers.CharField()
-    CostCenter = serializers.CharField()
+    LineFK = serializers.SerializerMethodField()
+
     EffectivePlan = serializers.CharField()
     EffectiveFact = serializers.CharField()
     ErrorPlan = serializers.CharField()
@@ -59,16 +58,19 @@ class LinesSerializer(serializers.ModelSerializer):
     Decision = serializers.CharField()
 
     class Meta:
-        model = Lines
+        model = LinesRates
         fields = '__all__'
 
+    def get_LineFK(self, instance):
+        line = instance.LineFK
+        return  f'{line.Name} | {line.CostCenter}'
 
 class LinesDependSerializer(serializers.ModelSerializer):
-    value = serializers.CharField(source='LineID')
+    value = serializers.CharField(source='ID')
     text = serializers.CharField(source='Name')
 
     class Meta:
-        model = Lines
+        model = LinesList
         fields = ('value', 'text')
 
 
@@ -122,9 +124,9 @@ class IndividualBonusDependSerializer(serializers.ModelSerializer):
         return instance.full_name
 
 class PostionDependSerializer(serializers.ModelSerializer):
-    value = serializers.CharField(source='PositionID')
+    value = serializers.CharField(source='ID')
     text = serializers.CharField(source='PositionName')
 
     class Meta:
-        model = Position
+        model = Positions
         fields = ('value', 'text')

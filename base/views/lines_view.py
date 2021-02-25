@@ -4,13 +4,13 @@ from django.db import transaction
 from django.http import JsonResponse
 from rest_framework.views import APIView
 
-from base.models import Lines
+from base.models import LinesRates
 from base.serializers.bonus_serializer import LinesSerializer
 from base.views.utils import delete_props, BaseGenericListView
 
 
 def save_line_item(line_date):
-    line = Lines.objects.get(ID=line_date['ID'])
+    line = LinesRates.objects.get(ID=line_date['ID'])
     line.EffectivePlan = line_date['EffectivePlan']
     line.EffectiveFact = line_date['EffectiveFact']
     line.ErrorPlan = line_date['ErrorPlan']
@@ -20,10 +20,10 @@ def save_line_item(line_date):
     return line
 
 class LinesViewGenericListView(BaseGenericListView):
-    _model = Lines
+    _model = LinesRates
     _param_entity = 'line'
     _serialize = LinesSerializer
-    _hide_columns = ['LineID', 'ID']
+    _hide_columns = ['ID']
 
 
 class LinesView(APIView, LinesViewGenericListView):
@@ -39,7 +39,7 @@ class LinesView(APIView, LinesViewGenericListView):
             except Exception:
                 raise Exception('Не удалось сохранить элементы.')
 
-            lines = Lines.objects.all()
+            lines = LinesRates.objects.all()
             serialize = LinesSerializer(lines, many=True)
             return JsonResponse({"result": True, "items": serialize.data})
         else:

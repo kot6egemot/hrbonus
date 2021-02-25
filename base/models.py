@@ -9,8 +9,7 @@ from django.db import models
 
 
 class BaseModel(models.Model):
-    ID = models.TextField(primary_key=True ,verbose_name='UUID', max_length=100)
-
+    ID = models.TextField(primary_key=True, verbose_name='UUID', max_length=100)
 
     class Meta:
         abstract = True
@@ -67,17 +66,17 @@ class BaseModel(models.Model):
     def forms_columns():
         return []
 
+
 class Bonuses_Summary(BaseModel):
     LastName = models.TextField(verbose_name='Фамилия')
     FirstName = models.TextField(verbose_name='Имя')
 
+    PositionFK = models.ForeignKey("Positions", db_column="PositionFK", related_name='position', verbose_name='Позиция',
+                                   on_delete=models.CASCADE, to_field='ID')  # +++ Отобразить с другой таблицы.
 
-    PositionFK = models.ForeignKey("Position", db_column="PositionFK",  related_name='position',  verbose_name='Позиция',
-                                   on_delete=models.CASCADE, )  # +++ Отобразить с другой таблицы.
-
-
-    LineFK = models.ForeignKey("Lines", related_name='line', db_column="LineFK",
-                               on_delete=models.CASCADE, verbose_name='Линия')  # +++ Оторазить с другой таблицы.
+    LineFK = models.ForeignKey("LinesList", related_name='line', db_column="LineFK",
+                               on_delete=models.CASCADE, verbose_name='Линия',
+                               to_field='ID')  # +++ Оторазить с другой таблицы.
 
     BO10 = models.PositiveIntegerField(verbose_name="Производственная часть")
     PersPart = models.PositiveIntegerField(verbose_name="Индивидуальная часть")
@@ -115,40 +114,49 @@ class Bonuses_Summary(BaseModel):
     def full_name(self):
         return f'{self.FirstName} {self.LastName}'
 
-class Lines(BaseModel):
-    LineID = models.CharField(max_length=10)
 
+class LinesRates(BaseModel):
     Year = models.TextField(verbose_name='Год')  # int
     Month = models.TextField(verbose_name='Месяц')  # int
 
-    Name = models.TextField(verbose_name="Линия")
-    CostCenter = models.TextField()
-    EffectivePlan = models.PositiveIntegerField()
-    EffectiveFact = models.PositiveIntegerField()
-    ErrorPlan = models.PositiveIntegerField()
-    ErrorFact = models.PositiveIntegerField()
-    Decision = models.PositiveIntegerField()
+    LineFK = models.ForeignKey('LinesList', db_column="LineFK", to_field='ID', on_delete=models.CASCADE, verbose_name="Линия")
+
+    EffectivePlan = models.FloatField(verbose_name="Эффективность(План)")
+    EffectiveFact = models.FloatField(verbose_name="Эффективность(Факт)")
+    ErrorPlan = models.FloatField(verbose_name="Брак(План)")
+    ErrorFact = models.FloatField(verbose_name="Брак(Факт)")
+    Decision = models.PositiveIntegerField(verbose_name="Решение по производственной части")
 
     class Meta:
-        db_table = 'lines'
+        db_table = 'linesrates'
 
     def __str__(self):
-        return str(self.LineID)
+        return str(self.ID)
 
     @staticmethod
     def editable_columns():
         return ["EffectivePlan", "EffectiveFact", "ErrorPlan", "ErrorFact", "Decision"]
 
 
-class Constant(BaseModel):
+class LinesList(BaseModel):
+    Name = models.TextField()
+    CostCenter = models.TextField()
 
+    class Meta:
+        db_table = 'lineslist'
+
+    def __str__(self):
+        return str(self.Name)
+
+
+class Constant(BaseModel):
     Year = models.TextField(verbose_name='Год')  # int
     Month = models.TextField(verbose_name='Месяц')  # int
 
-    PersPart = models.PositiveIntegerField(verbose_name="Персональная часть")
-    DaysInMonth = models.TextField(verbose_name="Норма дней/месяц")
-    LeadMultiplier = models.PositiveIntegerField()
-    extMultiplier = models.PositiveIntegerField()
+    PersPart = models.PositiveIntegerField(verbose_name="Персональная часть (По умолчанию)")
+    DaysInMonth = models.PositiveIntegerField(verbose_name="Норма дней/месяц")
+    LeadMultiplier = models.FloatField(verbose_name="Коэффициент (Бригадирство)")
+    extMultiplier = models.FloatField(verbose_name="Коэффициент (Расширение обязанностей)")
 
     class Meta:
         db_table = 'constants'
@@ -159,14 +167,14 @@ class Constant(BaseModel):
 
 
 class IndividualChanges(BaseModel):
-
     Year = models.TextField(verbose_name='Год')  # int
     Month = models.TextField(verbose_name='Месяц')  # int
 
     PersNr = models.CharField(max_length=10, verbose_name="Сотрудник")
     HourlyRate = models.TextField(verbose_name="Часовая ставка, Оклад")
     LineFK = models.TextField(verbose_name="Линия")
-    PositionFK = models.TextField(verbose_name="Позиция")
+    PositionFK = models.ForeignKey('Positions', db_column='PositionFK', to_field='ID', verbose_name='Позиция',
+                                   on_delete=models.CASCADE)
 
     class Meta:
         db_table = 'individualchanges'
@@ -187,14 +195,22 @@ class IndividualChanges(BaseModel):
     def forms_columns():
         return []
 
-class Position(BaseModel):
-    PositionID = models.CharField(max_length=10)
 
+class PositionRates(BaseModel):
+    PositionFK = models.CharField(max_length=10)
     Year = models.TextField(verbose_name='Год')  # int
     Month = models.TextField(verbose_name='Месяц')  # int
-
-    PositionName = models.TextField()
     HourlyRate = models.TextField(verbose_name="Часовая ставка, Оклад")
 
     class Meta:
-        db_table = 'positions'
+        db_table = 'positionsrates'
+
+
+class Positions(BaseModel):
+    PositionName = models.TextField()
+
+    class Meta:
+        db_table = 'positionslist'
+
+    def __str__(self):
+        return str(self.ID)
