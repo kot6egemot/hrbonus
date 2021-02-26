@@ -2,7 +2,7 @@ from django.urls import path
 from base.views.auth_view import ApiLoginView, UserProfileView
 from base.views.bonus_view import BonusView, BonusLineView
 from base.views.constants_view import ConstantView
-from base.views.download_view import DownloadCSVView
+from base.views.download_scv_view import DownloadCSVView
 from base.views.individual_changes_view import IndividualChangesView, IndividualLineView, IndividualPositionView, \
     IndividualPositionDependView, IndividualCreateDependView
 from base.views.lines_view import LinesView

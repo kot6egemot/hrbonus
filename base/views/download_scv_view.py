@@ -2,12 +2,13 @@ import csv
 import io
 from django.http import  FileResponse
 from rest_framework.views import APIView
-
-from base.models import Constant
+from base.models import CSVExportView_Basic, Constant
 from base.serializers.bonus_serializer import ConstantsSerializer
+from base.serializers.csv_serializer import CSVExportView_BasicSerializer
+
 
 class DownloadCSVView(APIView):
-    serializer_class = ConstantsSerializer
+    serializer_class = CSVExportView_BasicSerializer
 
     def get_serializer(self, queryset, many=True):
         return self.serializer_class(
@@ -18,11 +19,11 @@ class DownloadCSVView(APIView):
     def get(self, request, *args, **kwargs):
 
         serializer = self.get_serializer(
-            Constant.objects.all(),
+            CSVExportView_Basic.objects.all(),
             many=True
         )
 
-        headers = ('ID', 'Year', 'Month','PersPart', 'DaysInMonth', 'LeadMultiplier', 'extMultiplier')
+        headers = [field['name'] for field in CSVExportView_Basic.get_model_fields()]
 
         output = io.StringIO()
         writer = csv.DictWriter(output, headers)
@@ -32,4 +33,3 @@ class DownloadCSVView(APIView):
         csv_output = output.getvalue()
         response = FileResponse(csv_output, as_attachment=True)
         return response
-

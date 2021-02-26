@@ -214,3 +214,35 @@ class Positions(BaseModel):
 
     def __str__(self):
         return str(self.ID)
+
+
+class CSVExportView_Basic(BaseModel):
+    class Meta:
+        db_table = 'CSVExportView_Basic'
+
+    Year= models.TextField()
+    Month= models.TextField()
+    LastName= models.TextField()
+    FirstName= models.TextField()
+    PositionName= models.TextField()
+    Line= models.TextField()
+    HourlyRate= models.TextField()
+    DaysAtWork= models.TextField()
+    ProdPart= models.TextField()
+    PersPart= models.TextField()
+    BO10= models.TextField()
+    DaysInMonth= models.TextField()
+    BasicPay= models.TextField()
+    Bonus= models.TextField()
+    LeadMoney= models.TextField()
+    TeachMoney= models.TextField()
+    OneTimeMoney= models.TextField()
+    LeadHours= models.TextField()
+    TeachHours= models.TextField()
+    ExtHours= models.TextField()
+    BonusBudget= models.TextField()
+    BonusDelta= models.TextField()
+    BO46= models.TextField()
+    BO19= models.TextField()
+    PersNr= models.TextField()
+
