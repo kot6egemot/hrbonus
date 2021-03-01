@@ -26,7 +26,7 @@ class DownloadCSVView(APIView):
         headers = [field['name'] for field in CSVExportView_Basic.get_model_fields()]
 
         output = io.StringIO()
-        writer = csv.DictWriter(output, headers)
+        writer = csv.DictWriter(output, headers, delimiter=";")
         writer.writeheader()
         for stats in serializer.data:
             writer.writerow(stats)
