@@ -1,11 +1,62 @@
 import uuid
 
 from django.db import models
+from django.contrib.auth.models import User
+import jsonfield
 
 """
     display_relative_model - внешнии ключи в другую таблицу, значение которых надо подгрузить.
                              предоставить url => entity_{foreign_key}
 """
+
+example_role = {
+    "bonus": {
+        "view": True,
+        "edit": True,
+        "delete": True,
+        "add": True,
+    },
+    "line": {
+        "view": True,
+        "edit": True,
+        "delete": True,
+        "add": True,
+    },
+    "constant": {
+        "view": True,
+        "edit": True,
+        "delete": True,
+        "add": True,
+    },
+    "individual_change": {
+        "view": True,
+        "edit": True,
+        "delete": True,
+        "add": True,
+    },
+    "cvs_upload": {
+        "view": True,
+        "edit": True,
+        "delete": True,
+        "add": True,
+    },
+}
+
+
+class UserRole(models.Model):
+    user_id = models.OneToOneField(User, on_delete=models.CASCADE, parent_link=True, db_column='user_id', related_name='role')
+    rule = jsonfield.JSONField()
+
+    class Meta:
+        db_table = 'UserRole'
+
+# class BlockBonusDate():
+#     Year = models.IntegerField()
+#     Month = models.IntegerField()
+#     is_blocking = models.BooleanField()
+#
+#     class Meta:
+#         db_table = 'BlockBonusDate'
 
 
 class BaseModel(models.Model):
@@ -116,7 +167,8 @@ class Bonuses_Summary(BaseModel):
 
 
 class LinesRates(BaseModel):
-    LineFK = models.ForeignKey('LinesList', db_column="LineFK", to_field='ID', on_delete=models.CASCADE, verbose_name="Линия")
+    LineFK = models.ForeignKey('LinesList', db_column="LineFK", to_field='ID', on_delete=models.CASCADE,
+                               verbose_name="Линия")
     EffectivePlan = models.FloatField(verbose_name="Эффективность(План)")
     EffectiveFact = models.FloatField(verbose_name="Эффективность(Факт)")
     ErrorPlan = models.FloatField(verbose_name="Брак(План)")
@@ -220,29 +272,28 @@ class CSVExportView_Basic(BaseModel):
     class Meta:
         db_table = 'CSVExportView_Basic'
 
-    Year= models.TextField()
-    Month= models.TextField()
-    LastName= models.TextField()
-    FirstName= models.TextField()
-    PositionName= models.TextField()
-    Line= models.TextField()
-    HourlyRate= models.TextField()
-    DaysAtWork= models.TextField()
-    ProdPart= models.TextField()
-    PersPart= models.TextField()
-    BO10= models.TextField()
-    DaysInMonth= models.TextField()
-    BasicPay= models.TextField()
-    Bonus= models.TextField()
-    LeadMoney= models.TextField()
-    TeachMoney= models.TextField()
-    OneTimeMoney= models.TextField()
-    LeadHours= models.TextField()
-    TeachHours= models.TextField()
-    ExtHours= models.TextField()
-    BonusBudget= models.TextField()
-    BonusDelta= models.TextField()
-    BO46= models.TextField()
-    BO19= models.TextField()
-    PersNr= models.TextField()
-
+    Year = models.TextField()
+    Month = models.TextField()
+    LastName = models.TextField()
+    FirstName = models.TextField()
+    PositionName = models.TextField()
+    Line = models.TextField()
+    HourlyRate = models.TextField()
+    DaysAtWork = models.TextField()
+    ProdPart = models.TextField()
+    PersPart = models.TextField()
+    BO10 = models.TextField()
+    DaysInMonth = models.TextField()
+    BasicPay = models.TextField()
+    Bonus = models.TextField()
+    LeadMoney = models.TextField()
+    TeachMoney = models.TextField()
+    OneTimeMoney = models.TextField()
+    LeadHours = models.TextField()
+    TeachHours = models.TextField()
+    ExtHours = models.TextField()
+    BonusBudget = models.TextField()
+    BonusDelta = models.TextField()
+    BO46 = models.TextField()
+    BO19 = models.TextField()
+    PersNr = models.TextField()

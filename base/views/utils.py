@@ -34,3 +34,4 @@ def get_month_year(request):
     month = request.GET['month']
     year = request.GET['year']
     return month, year
+

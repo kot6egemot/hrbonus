@@ -6,6 +6,7 @@ from base.views.download_scv_view import DownloadCSVView
 from base.views.individual_changes_view import IndividualChangesView, IndividualLineView, IndividualPositionView, \
     IndividualPositionDependView, IndividualCreateDependView
 from base.views.lines_view import LinesView
+from base.views.navigation_view import NavigationView
 
 urlpatterns = [
                   path('login', ApiLoginView.as_view(), name='login'),
@@ -32,4 +33,7 @@ urlpatterns = [
               ] + \
               [
                   path('download_csv', DownloadCSVView.as_view(), name='download_csv'),
+              ] + \
+              [
+                  path('navigation', NavigationView.as_view(), name='navigation'),
               ]

@@ -42,7 +42,6 @@ def save_individual_changes(data):
 class IndividualChangesView(APIView, IndividualChangesViewGenericListView):
 
     def put(self, request):
-        # Мы не коммитем здесь.
         month, year = get_month_year(request)
         PersNr = request.data["PersNr"]
         person_bonus = Bonuses_Summary.objects.filter(Month=month, Year=year, PersNr=PersNr).first()
@@ -65,7 +64,6 @@ class IndividualChangesView(APIView, IndividualChangesViewGenericListView):
         individual_change.save()
         serialize = IndividualChangesSerializer(individual_change)
         data = serialize.data
-        # data["changed"] = False
 
         return JsonResponse({
             "result": True,
