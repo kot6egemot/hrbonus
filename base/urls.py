@@ -1,5 +1,5 @@
 from django.urls import path
-from base.views.auth_view import ApiLoginView, UserProfileView
+from base.views.auth_view import ApiLoginView, UserProfileView, UsersViewGenericListView
 from base.views.bonus_view import BonusView, BonusLineView
 from base.views.constants_view import ConstantView
 from base.views.download_scv_view import DownloadCSVView
@@ -36,4 +36,8 @@ urlpatterns = [
               ] + \
               [
                   path('navigation', NavigationView.as_view(), name='navigation'),
+              ]+ \
+              [
+                  path('users', UsersViewGenericListView.as_view(), name='users'),
               ]
+

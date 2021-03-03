@@ -68,6 +68,11 @@ navigation = [{
         "title": "Выгрузка данных",
         "icon": "mdi-download",
         "entity": "csv_upload"
+    },
+    {
+        "title": "Пользователи",
+        "icon": "mdi-download",
+        "entity": "users"
     }
 ]
 
