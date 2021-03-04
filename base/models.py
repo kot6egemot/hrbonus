@@ -43,6 +43,15 @@ example_role = {
 }
 
 
+class BlockBonus(models.Model):
+    Year = models.IntegerField()
+    Month = models.IntegerField()
+    is_blocking = models.BooleanField()
+
+    class Meta:
+        db_table = 'blockbonus'
+
+
 class UserRole(models.Model):
     user_id = models.OneToOneField(User, on_delete=models.CASCADE, parent_link=True, db_column='user_id', related_name='role')
     rule = jsonfield.JSONField()

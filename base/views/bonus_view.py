@@ -3,7 +3,7 @@ from random import randint
 from django.http import JsonResponse
 from rest_framework.views import APIView
 
-from base.models import Bonuses_Summary, LinesList
+from base.models import Bonuses_Summary, LinesList, BlockBonus
 from base.serializers.bonus_serializer import BonusSerializer, LinesDependSerializer
 from base.views.utils import BaseGenericListView
 
@@ -52,3 +52,40 @@ class BonusView(APIView, BonusViewGenericListView):
 
 class BonusLineView(APIView, BonusLineViewGenericListView):
     pass
+
+
+class BlockBonusView(APIView):
+
+    def get(self, request):
+        Year = request.GET['Year']
+        Month = request.GET['Month']
+        block =  BlockBonus.objects.filter(Year=Year, Month=Month).first()
+        if not block:
+            block = BlockBonus(Year=Year, Month=Month, is_blocking=False)
+        block.save()
+
+        return JsonResponse({
+            'result': True,
+            'block_data': {
+                'is_block':block.is_blocking,
+                'Year':block.Year,
+                'Month': block.Month
+            }
+        })
+
+    def post(self, request):
+        Year = request.GET['Year']
+        Month = request.GET['Month']
+        block =  BlockBonus.objects.filter(Year=Year, Month=Month).first()
+        block.is_blocking = not block.is_blocking
+        block.save()
+
+        return JsonResponse({
+            'result': True,
+            'block_data': {
+                'is_block':block.is_blocking,
+                'Year':block.Year,
+                'Month': block.Month
+            }
+        })
+

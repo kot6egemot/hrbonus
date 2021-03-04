@@ -1,6 +1,6 @@
 from django.urls import path
 from base.views.auth_view import ApiLoginView, UserProfileView
-from base.views.bonus_view import BonusView, BonusLineView
+from base.views.bonus_view import BonusView, BonusLineView, BlockBonusView
 from base.views.constants_view import ConstantView
 from base.views.download_scv_view import DownloadCSVView
 from base.views.individual_changes_view import IndividualChangesView, IndividualLineView, IndividualPositionView, \
@@ -16,6 +16,7 @@ urlpatterns = [
               [
                   path('bonus', BonusView.as_view(), name='bonus'),
                   path('bonus_linefk', BonusLineView.as_view(), name='bonus_linefk'),
+                  path('bonus_block', BlockBonusView.as_view(), name='bonus_block'),
 
                   path('line', LinesView.as_view(), name='lines'),
               ] + \
