@@ -51,6 +51,16 @@ class BlockBonus(models.Model):
     class Meta:
         db_table = 'blockbonus'
 
+class BonusChange(models.Model):
+    Year = models.IntegerField()
+    Month = models.IntegerField()
+    PersNr = models.IntegerField()
+    LeadHours_changed = models.BooleanField(default=False)
+    TeachHours_changed = models.BooleanField(default=False)
+
+    class Meta:
+        db_table = 'bonuschages'
+
 
 class UserRole(models.Model):
     user_id = models.OneToOneField(User, on_delete=models.CASCADE, parent_link=True, db_column='user_id', related_name='role')
@@ -168,7 +178,7 @@ class Bonuses_Summary(BaseModel):
 
     @staticmethod
     def editable_columns():
-        return ["OneTimeMoney", "ExtHours", "PersPart"]
+        return ["OneTimeMoney", "ExtHours", "PersPart", "LeadHours", "TeachHours"]
 
     @property
     def full_name(self):
