@@ -45,9 +45,16 @@ class IndividualChangesView(APIView, IndividualChangesViewGenericListView):
         month, year = get_month_year(request)
         PersNr = request.data["PersNr"]
         person_bonus = Bonuses_Summary.objects.filter(Month=month, Year=year, PersNr=PersNr).first()
-
-        position_rate = PositionRates.objects.get(PositionFK=person_bonus.PositionFK.ID, Year=year, Month=month)
-
+        try:
+            position_rate = PositionRates.objects.get(PositionFK=person_bonus.PositionFK.ID, Year=year, Month=month)
+        except PositionRates.DoesNotExist:
+            position_rate = PositionRates(
+                PositionFK=person_bonus.PositionFK.ID,
+                Year=year,
+                Month=month,
+                HourlyRate=0
+            )
+            position_rate.save()
         position = Positions.objects.get(ID=person_bonus.PositionFK.ID)
         line = person_bonus.LineFK
 
