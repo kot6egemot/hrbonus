@@ -5,6 +5,7 @@ from rest_framework.views import APIView
 from base.models import CSVExportView_Basic, Constant
 from base.serializers.bonus_serializer import ConstantsSerializer
 from base.serializers.csv_serializer import CSVExportView_BasicSerializer
+from base.views.utils import get_month_year
 
 
 class DownloadCSVView(APIView):
@@ -17,14 +18,13 @@ class DownloadCSVView(APIView):
         )
 
     def get(self, request, *args, **kwargs):
-
+        Year = request.GET['Year']
+        Month = request.GET['Month']
         serializer = self.get_serializer(
-            CSVExportView_Basic.objects.all(),
+            CSVExportView_Basic.objects.filter(Month=Month, Year=Year).all(),
             many=True
         )
-
-        headers = [field['name'] for field in CSVExportView_Basic.get_model_fields()]
-
+        headers = [field['name'] for field in CSVExportView_Basic.get_model_fields() if field['name'] not in ['ID', 'Year', 'Month']]
         output = io.StringIO()
         writer = csv.DictWriter(output, headers, delimiter=";")
         writer.writeheader()
