@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from base.models import Bonuses_Summary, Constant, IndividualChanges, Positions, LinesRates, LinesList
+from base.models import Bonuses_Summary, Constant, IndividualChanges, Positions, LinesRates, LinesList, DayliReports
 
 
 class BonusSerializer(serializers.ModelSerializer):
@@ -98,6 +98,7 @@ class IndividualChangesSerializer(serializers.ModelSerializer):
     PersNr = serializers.SerializerMethodField()
 
     HourlyRate = serializers.CharField()
+    TimeMultiplier = serializers.CharField()
     LineFK = serializers.CharField()
     PositionFK = serializers.CharField()
 
@@ -130,3 +131,11 @@ class PostionDependSerializer(serializers.ModelSerializer):
     class Meta:
         model = Positions
         fields = ('value', 'text')
+
+
+
+class DayliReportsSerializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = DayliReports
+        fields = '__all__'

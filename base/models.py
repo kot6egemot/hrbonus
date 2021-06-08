@@ -40,6 +40,12 @@ example_role = {
         "delete": True,
         "add": True,
     },
+    "daily_reports": {
+        "view": True,
+        "edit": True,
+        "delete": True,
+        "add": True,
+    },
 }
 
 
@@ -50,6 +56,7 @@ class BlockBonus(models.Model):
 
     class Meta:
         db_table = 'blockbonus'
+
 
 class BonusChange(models.Model):
     Year = models.IntegerField()
@@ -63,11 +70,13 @@ class BonusChange(models.Model):
 
 
 class UserRole(models.Model):
-    user_id = models.OneToOneField(User, on_delete=models.CASCADE, parent_link=True, db_column='user_id', related_name='role')
+    user_id = models.OneToOneField(User, on_delete=models.CASCADE, parent_link=True, db_column='user_id',
+                                   related_name='role')
     rule = jsonfield.JSONField()
 
     class Meta:
         db_table = 'UserRole'
+
 
 # class BlockBonusDate():
 #     Year = models.IntegerField()
@@ -93,7 +102,9 @@ class BaseModel(models.Model):
         columns = [{'text': 'Actions', 'value': 'Actions'}] \
                   + [
                       {
-                          'text': field['text'], 'value': field['name'],
+                          'text': field['text'],
+                          'value': field['name'],
+                          'type': field['type'],
                           'display_relative_model': True if field['name'] in displayed_foreign_fields else False,
                       }
                       for field in fields if field['name'] not in hide_columns
@@ -102,8 +113,16 @@ class BaseModel(models.Model):
 
     @classmethod
     def get_model_fields(cls):
-        return [{'name': field.name, 'text': field.verbose_name or field.name} for field in
-                cls._meta.fields]
+        type_of_fields = {
+            'TimeMultiplier': 'bool'
+        }
+        return [
+            {
+                'name': field.name,
+                'text': field.verbose_name or field.name,
+                'type': type_of_fields.get(field.name, None)
+            }
+            for field in cls._meta.fields]
 
     @staticmethod
     def displayed_foreign_fields() -> list:
@@ -242,7 +261,7 @@ class IndividualChanges(BaseModel):
     LineFK = models.TextField(verbose_name="Линия")
     PositionFK = models.ForeignKey('Positions', db_column='PositionFK', to_field='ID', verbose_name='Позиция',
                                    on_delete=models.CASCADE)
-
+    TimeMultiplier = models.TextField(verbose_name='TimeMultiplier')
     Year = models.TextField(verbose_name='Год')  # int
     Month = models.TextField(verbose_name='Месяц')  # int
 
@@ -251,7 +270,7 @@ class IndividualChanges(BaseModel):
 
     @staticmethod
     def editable_columns():
-        return ["HourlyRate", "LineFK", "PositionFK"]
+        return ["HourlyRate", "LineFK", "PositionFK", "TimeMultiplier"]
 
     @staticmethod
     def displayed_foreign_fields():
@@ -316,3 +335,17 @@ class CSVExportView_Basic(BaseModel):
     BO46 = models.TextField()
     BO19 = models.TextField()
     PersNr = models.TextField()
+
+
+class DayliReports(BaseModel):
+    class Meta:
+        db_table = 'dailyreports'
+
+    LastName = models.TextField(verbose_name='Фамилия')
+    FirstName = models.TextField(verbose_name='Имя')
+    SAPnumber = models.TextField(verbose_name='Номер SAP')
+    LeadHours = models.TextField(verbose_name="Часы управления бригадой")
+    TeachHours = models.TextField(verbose_name="Часы наставничества")
+    Date = models.TextField(verbose_name='Дата')
+    Year = models.TextField(verbose_name='Год')  # int
+    Month = models.TextField(verbose_name='Месяц')  # int

@@ -2,11 +2,13 @@ from django.urls import path
 from base.views.auth_view import ApiLoginView, UserProfileView
 from base.views.bonus_view import BonusView, BonusLineView, BlockBonusView
 from base.views.constants_view import ConstantView
+from base.views.dayli_reports import DailyReportsView
 from base.views.download_scv_view import DownloadCSVView
 from base.views.individual_changes_view import IndividualChangesView, IndividualLineView, IndividualPositionView, \
     IndividualPositionDependView, IndividualCreateDependView
 from base.views.lines_view import LinesView
 from base.views.navigation_view import NavigationView
+from base.views.utils import UpdateModelField
 
 urlpatterns = [
                   path('login', ApiLoginView.as_view(), name='login'),
@@ -37,4 +39,10 @@ urlpatterns = [
               ] + \
               [
                   path('navigation', NavigationView.as_view(), name='navigation'),
+              ] + \
+              [
+                  path('daily_report', DailyReportsView.as_view(), name='daily_reports'),
+              ] + \
+              [
+                  path('update_field/<str:entity>/<int:id>', UpdateModelField.as_view(), name='update_model_field'),
               ]
