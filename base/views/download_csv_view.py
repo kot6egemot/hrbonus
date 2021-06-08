@@ -54,7 +54,7 @@ class DownloadCSVView(APIView):
         headers = [field['name'] for field in CSVExportView_Basic.get_model_fields() if
                    field['name'] not in ['ID', 'Year', 'Month']]
 
-        with open("sample.csv", "w", encoding='utf-8-sig') as csv_file:
+        with open("sample.csv", "w", encoding='utf-8-sig', newline='') as csv_file:
             w = csv.DictWriter(csv_file, headers, delimiter=";")
             w.writeheader()
             for stats in serializer.data:
@@ -98,7 +98,7 @@ class DailyCSVView(APIView):
         )
         headers = [field['name'] for field in model.get_model_fields() if field['name'] not in ['ID', 'Year', 'Month']]
 
-        with open("sample1.csv", "w", encoding='utf-8-sig') as csv_file:
+        with open("sample1.csv", "w", encoding='utf-8-sig', newline='') as csv_file:
             w = csv.DictWriter(csv_file, headers, delimiter=";")
             w.writeheader()
             for stats in serializer.data:
