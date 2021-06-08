@@ -2,13 +2,14 @@ import csv
 import io
 import os
 import zipfile
+from pprint import pprint
 
 import requests
 from django.http import FileResponse, HttpResponse, JsonResponse
 from idna import unicode
 from rest_framework.views import APIView
-from base.models import CSVExportView_Basic, Constant
-from base.serializers.bonus_serializer import ConstantsSerializer
+from base.models import CSVExportView_Basic, Constant, DailyReports
+from base.serializers.bonus_serializer import ConstantsSerializer, DayliReportsSerializer, DayliReportsCSVSerializer
 from base.serializers.csv_serializer import CSVExportView_BasicSerializer
 from base.views.utils import get_month_year
 import urllib.parse
@@ -50,7 +51,8 @@ class DownloadCSVView(APIView):
             CSVExportView_Basic.objects.filter(Month=Month, Year=Year).all(),
             many=True
         )
-        headers = [field['name'] for field in CSVExportView_Basic.get_model_fields() if field['name'] not in ['ID', 'Year', 'Month']]
+        headers = [field['name'] for field in CSVExportView_Basic.get_model_fields() if
+                   field['name'] not in ['ID', 'Year', 'Month']]
 
         with open("sample.csv", "w", encoding='utf-8-sig') as csv_file:
             w = csv.DictWriter(csv_file, headers, delimiter=";")
@@ -68,33 +70,44 @@ class DownloadCSVView(APIView):
 
 
 class DailyCSVView(APIView):
-    serializer_class = CSVExportView_BasicSerializer
+    serializer_class = None
 
-    def get_serializer(self, queryset, many=True):
+    def get_serializer(self, entity, queryset, many=True):
+        map_entities_models = {
+            "daily_report": DayliReportsCSVSerializer
+        }
+        self.serializer_class = map_entities_models.get(entity)
+
         return self.serializer_class(
             queryset,
             many=many,
         )
 
-    def get(self, request, *args, **kwargs):
+    def get(self, request, entity, *args, **kwargs):
+        map_entities_models = {
+            "daily_report": DailyReports
+        }
+
+        model = map_entities_models.get(entity)
         Year = request.GET['Year']
         Month = request.GET['Month']
         serializer = self.get_serializer(
-            CSVExportView_Basic.objects.filter(Month=Month, Year=Year).all(),
-            many=True
+            entity,
+            model.objects.filter(Month=Month, Year=Year).all(),
+            many=True,
         )
-        headers = [field['name'] for field in CSVExportView_Basic.get_model_fields() if field['name'] not in ['ID', 'Year', 'Month']]
+        headers = [field['name'] for field in model.get_model_fields() if field['name'] not in ['ID', 'Year', 'Month']]
 
-        with open("sample.csv", "w", encoding='utf-8-sig') as csv_file:
+        with open("sample1.csv", "w", encoding='utf-8-sig') as csv_file:
             w = csv.DictWriter(csv_file, headers, delimiter=";")
             w.writeheader()
             for stats in serializer.data:
                 w.writerow(stats)
 
-        csv_file = open('sample.csv', 'rb')
+        csv_file = open('sample1.csv', 'rb')
         response = FileResponse(csv_file)
         return response
 
     def delete(self, request, *args, **kwargs):
-        os.remove('sample.csv')
+        os.remove('sample1.csv')
         return JsonResponse({'result': True})

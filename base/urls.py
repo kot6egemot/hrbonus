@@ -3,7 +3,7 @@ from base.views.auth_view import ApiLoginView, UserProfileView
 from base.views.bonus_view import BonusView, BonusLineView, BlockBonusView
 from base.views.constants_view import ConstantView
 from base.views.daily_reports import DailyReportsView
-from base.views.download_scv_view import DownloadCSVView
+from base.views.download_csv_view import DownloadCSVView, DailyCSVView
 from base.views.individual_changes_view import IndividualChangesView, IndividualLineView, IndividualPositionView, \
     IndividualPositionDependView, IndividualCreateDependView
 from base.views.lines_view import LinesView
@@ -45,4 +45,7 @@ urlpatterns = [
               ] + \
               [
                   path('update_field/<str:entity>/<int:id>', UpdateModelField.as_view(), name='update_model_field'),
+              ] + \
+              [
+                  path('reports/<str:entity>', DailyCSVView.as_view(), name='update_csv'),
               ]

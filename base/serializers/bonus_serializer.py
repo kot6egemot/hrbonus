@@ -139,3 +139,8 @@ class DayliReportsSerializer(serializers.ModelSerializer):
     class Meta:
         model = DailyReports
         fields = '__all__'
+
+class DayliReportsCSVSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DailyReports
+        exclude = ('Month', 'Year', 'ID')
