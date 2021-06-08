@@ -337,7 +337,7 @@ class CSVExportView_Basic(BaseModel):
     PersNr = models.TextField()
 
 
-class DayliReports(BaseModel):
+class DailyReports(BaseModel):
     class Meta:
         db_table = 'dailyreports'
 

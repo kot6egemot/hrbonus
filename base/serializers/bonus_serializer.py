@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from base.models import Bonuses_Summary, Constant, IndividualChanges, Positions, LinesRates, LinesList, DayliReports
+from base.models import Bonuses_Summary, Constant, IndividualChanges, Positions, LinesRates, LinesList, DailyReports
 
 
 class BonusSerializer(serializers.ModelSerializer):
@@ -135,7 +135,7 @@ class PostionDependSerializer(serializers.ModelSerializer):
 
 
 class DayliReportsSerializer(serializers.ModelSerializer):
-    
+
     class Meta:
-        model = DayliReports
+        model = DailyReports
         fields = '__all__'

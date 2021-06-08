@@ -65,3 +65,36 @@ class DownloadCSVView(APIView):
     def delete(self, request, *args, **kwargs):
         os.remove('sample.csv')
         return JsonResponse({'result': True})
+
+
+class DailyCSVView(APIView):
+    serializer_class = CSVExportView_BasicSerializer
+
+    def get_serializer(self, queryset, many=True):
+        return self.serializer_class(
+            queryset,
+            many=many,
+        )
+
+    def get(self, request, *args, **kwargs):
+        Year = request.GET['Year']
+        Month = request.GET['Month']
+        serializer = self.get_serializer(
+            CSVExportView_Basic.objects.filter(Month=Month, Year=Year).all(),
+            many=True
+        )
+        headers = [field['name'] for field in CSVExportView_Basic.get_model_fields() if field['name'] not in ['ID', 'Year', 'Month']]
+
+        with open("sample.csv", "w", encoding='utf-8-sig') as csv_file:
+            w = csv.DictWriter(csv_file, headers, delimiter=";")
+            w.writeheader()
+            for stats in serializer.data:
+                w.writerow(stats)
+
+        csv_file = open('sample.csv', 'rb')
+        response = FileResponse(csv_file)
+        return response
+
+    def delete(self, request, *args, **kwargs):
+        os.remove('sample.csv')
+        return JsonResponse({'result': True})

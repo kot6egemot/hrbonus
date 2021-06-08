@@ -1,7 +1,7 @@
 from django.http import JsonResponse
 from rest_framework.views import APIView
 
-from base.models import DayliReports, IndividualChanges
+from base.models import DailyReports, IndividualChanges
 
 
 class BaseGenericListView:
